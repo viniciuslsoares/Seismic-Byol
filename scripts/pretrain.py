@@ -35,7 +35,7 @@ def build_pretext_datamodule() -> L.LightningDataModule:
                             min_scale=0,
                             degrees=5,
                             r_prob=0.0,
-                            h_prob=0.0,
+                            h_prob=0.5,
                             v_prob=0.0,
                             collor_jitter_prob=0,
                             grayscale_prob=0,
@@ -71,7 +71,7 @@ def build_pretext_model() -> L.LightningModule:
 def build_lightning_trainer(save_name:str) -> L.Trainer:
     return L.Trainer(
         accelerator="gpu",
-        max_epochs=5,
+        max_epochs=300,
         # max_steps=10500,
         enable_checkpointing=False, 
         logger=CSVLogger("logs", name="Byol", version=save_name),
@@ -81,7 +81,7 @@ def build_lightning_trainer(save_name:str) -> L.Trainer:
 
 # This function must not be changed. 
 def main(SSL_technique_prefix):
-    save_name = 'best_backbone'
+    save_name = '300Epochs_backbone'
 
     # Build the pretext model, the pretext datamodule, and the trainer
     pretext_model = build_pretext_model()

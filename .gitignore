@@ -173,5 +173,6 @@ data/
 repro/
 
 *.pth
+*.ckpt
 # *.csv
 # *.yaml

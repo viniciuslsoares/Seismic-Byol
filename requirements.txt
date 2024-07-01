@@ -1,0 +1,12 @@
+jsonargparse[signatures]>=4.26.1
+lightning
+lightly
+pandas
+tifffile
+torchmetrics
+torchsummary
+statsmodels
+pytorch_lightning
+lightly
+pytorch_metric_learning
+plotly
