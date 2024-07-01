@@ -29,13 +29,13 @@ def num_files(path):
 # with the best parameters found for the seismic/HAR task.
 # You might change this code, but must ensure it returns a Lightning DataModule.
 
-def build_pretext_datamodule() -> L.LightningDataModule:
+def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
     # Build the transform object
-    transform = BYOLTransform(input_size=256,
+    transform = BYOLTransform(input_size=input_size,
                             min_scale=0,
                             degrees=5,
                             r_prob=0.0,
-                            h_prob=0.5,
+                            h_prob=0.0,
                             v_prob=0.0,
                             collor_jitter_prob=0,
                             grayscale_prob=0,
@@ -45,7 +45,7 @@ def build_pretext_datamodule() -> L.LightningDataModule:
     # Create the datamodule
     print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/pretrain/"))
     return ByolDataModule(root_dir="../data/pretext/images/",
-                                batch_size=32,
+                                batch_size=batch,
                                 transform=transform)
 
 ### --------------- LightningModule --------------------------------------------------
@@ -68,25 +68,32 @@ def build_pretext_model() -> L.LightningModule:
 # with the best parameters found for the seismic/HAR task.
 # You might change this code, but must ensure you return a Lightning trainer.
 
-def build_lightning_trainer(save_name:str) -> L.Trainer:
+def build_lightning_trainer(save_name:str, epocas:int) -> L.Trainer:
     return L.Trainer(
         accelerator="gpu",
-        max_epochs=300,
+        max_epochs=epocas,
         # max_steps=10500,
         enable_checkpointing=False, 
         logger=CSVLogger("logs", name="Byol", version=save_name),
+        strategy='ddp_find_unused_parameters_true'
         )
     
 ### --------------- Main -----------------------------------------------------------------
 
-# This function must not be changed. 
 def main(SSL_technique_prefix):
-    save_name = '300Epochs_backbone'
+    
+    # numero de imagens: aprox 2780
+    
+    EPOCAS = 300
+    BATCH_SIZE = 128
+    INPUT_SIZE = 128
+    
+    save_name = f'E{EPOCAS}_S{BATCH_SIZE}_S{INPUT_SIZE}_Byol'
 
     # Build the pretext model, the pretext datamodule, and the trainer
     pretext_model = build_pretext_model()
-    pretext_datamodule = build_pretext_datamodule()
-    lightning_trainer = build_lightning_trainer(save_name)
+    pretext_datamodule = build_pretext_datamodule(BATCH_SIZE, INPUT_SIZE)
+    lightning_trainer = build_lightning_trainer(save_name, EPOCAS)
 
     # Fit the pretext model using the pretext_datamodule
     lightning_trainer.fit(pretext_model, pretext_datamodule)
@@ -96,5 +103,4 @@ def main(SSL_technique_prefix):
     pretext_save_backbone_weights(pretext_model, output_filename)
 
 if __name__ == "__main__":
-    SSL_technique_prefix = "Byol"
-    main(SSL_technique_prefix)
+    main('Byol')
