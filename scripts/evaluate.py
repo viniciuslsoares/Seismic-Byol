@@ -22,16 +22,17 @@ def evaluate_model(model, dataset_dl):
     # For each batch, compute the predictions and compare with the labels.
     for X, y in dataset_dl:
         # Move the model, data and metric to the GPU if available
+        model.eval()
         model.to(device)
         X = X.to(device)
         y = y.to(device)
         jaccard.to(device)
         f1.to(device)
-
-        logits = model(X.float())
-        predictions = torch.argmax(logits, dim=1, keepdim=True)
-        jaccard(predictions, y)
-        f1_score = f1(predictions, y)
+        with torch.no_grad():
+            logits = model(X.float())
+            predictions = torch.argmax(logits, dim=1, keepdim=True)
+            jaccard(predictions, y)
+            f1_score = f1(predictions, y)
     # Return a tuple with the number of correct predictions and the total number of predictions
     return (float(jaccard.compute().to("cpu"))), (float(f1_score.to("cpu")))
 
@@ -43,7 +44,6 @@ def report_IoU(model, dataset_dl, prefix=""):
 ### ---------- DataModule -----------------------------------------------------------
 
 # This function must instantiate and configure the datamodule for the downstream task.
-# You must not change this function (Check with the professor if you need to change it).
 def build_downstream_datamodule() -> L.LightningDataModule:
     return F3SeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
 
@@ -51,7 +51,6 @@ def build_downstream_datamodule() -> L.LightningDataModule:
 
 # This function must instantiate the downstream model and load its weights
 # from checkpoint_filename.
-# You might change this code, but must ensure it returns a Lightning model initialized with
 # Weights saved by the *_train.py script.
 
 def load_downstream_model(checkpoint_filename) -> L.LightningModule:
@@ -92,8 +91,11 @@ def main(SSL_technique_prefix):
     print(f'Data loaded: {import_name}')
 
     # Compute and report the mIoU metric for each subset
+    print(len(iter(train_dl)))
     report_IoU(downstream_model, train_dl, prefix="   Training dataset")
+    print(len(iter(val_dl)))
     report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
+    print(len(iter(test_dl)))
     report_IoU(downstream_model, test_dl,  prefix="       Test dataset")
 
 if __name__ == "__main__":

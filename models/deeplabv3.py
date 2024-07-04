@@ -21,7 +21,7 @@ class DeepLabV3Model(L.LightningModule):
         self.backbone = backbone if backbone else DeepLabV3Backbone()
         self.pred_head = pred_head if pred_head else DeepLabV3PredictionHead(num_classes=num_classes)
         self.loss_fn = torch.nn.CrossEntropyLoss()
-        self.learnign_rate = learning_rate
+        self.learning_rate = learning_rate
         if freeze_backbone:
             deactivate_requires_grad(self.backbone)
             
@@ -67,7 +67,7 @@ class DeepLabV3Model(L.LightningModule):
             
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(params=self.parameters(), lr=self.learnign_rate)
+        optimizer = torch.optim.Adam(params=self.parameters(), lr=self.learning_rate)
         return optimizer
     
 class DeepLabV3Backbone(nn.Module):
