@@ -115,5 +115,5 @@ class SegmentationModel(L.LightningModule):
             return test_loss
         
         def configure_optimizers(self):
-            optimizer = torch.optim.SGD(params=self.parameters(), lr=self.lr, momentum=0.9, weight_decay=0.0005)
+            optimizer = torch.optim.Adam(params=self.parameters(), lr=self.lr, weight_decay=0.0005)
             return optimizer

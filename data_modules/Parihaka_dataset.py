@@ -46,7 +46,7 @@ class ParihakaDataModule(L.LightningDataModule):
         self.setup()
 
     def setup(self, stage=None):
-        self.train_dataset = ParihakaDataset(Path(self.root_dir) / "pretrain", transform=self.transform)
+        self.train_dataset = ParihakaDataset(Path(self.root_dir) / "train", transform=self.transform)
         # self.val_dataset = ParihakaDataset(Path(self.root_dir) / "val", transform=self.transform)
 
     def train_dataloader(self):

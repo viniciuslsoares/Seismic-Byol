@@ -18,7 +18,8 @@ class BYOLTransform:
                 solarize_prob=0.0
                 ):
         self.transformV1 = T.Compose([
-            T.RandomResizedCrop(size=input_size, scale=(min_scale, 1.0)),
+            # T.RandomResizedCrop(size=input_size, scale=(min_scale, 1.0)),
+            T.RandomCrop(size=input_size, pad_if_needed=True, padding_mode='reflect'),
             T.RandomApply([T.RandomRotation(degrees=degrees)], p=r_prob),
             T.RandomHorizontalFlip(p=h_prob),
             T.RandomVerticalFlip(p=v_prob),
@@ -28,7 +29,8 @@ class BYOLTransform:
             T.RandomSolarize(solarize_prob),
         ])
         self.transformV2 = T.Compose([
-            T.RandomResizedCrop(size=input_size, scale=(min_scale, 1.0)),
+            # T.RandomResizedCrop(size=input_size, scale=(min_scale, 1.0)),
+            T.RandomCrop(size=input_size, pad_if_needed=True, padding_mode='reflect'),
             T.RandomApply([T.RandomRotation(degrees=degrees)], p=r_prob),
             T.RandomHorizontalFlip(p=h_prob),
             T.RandomVerticalFlip(p=v_prob),

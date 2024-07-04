@@ -43,8 +43,8 @@ def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
                             solarize_prob=0.0
                             )
     # Create the datamodule
-    print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/pretrain/"))
-    return ByolDataModule(root_dir="../data/pretext/images/",
+    # print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/pretrain/"))
+    return ByolDataModule(root_dir="../data/f3/images/",
                                 batch_size=batch,
                                 transform=transform)
 
@@ -85,10 +85,10 @@ def main(SSL_technique_prefix):
     # numero de imagens: aprox 2780
     
     EPOCAS = 300
-    BATCH_SIZE = 128
-    INPUT_SIZE = 128
+    BATCH_SIZE = 32
+    INPUT_SIZE = 256
     
-    save_name = f'E{EPOCAS}_S{BATCH_SIZE}_S{INPUT_SIZE}_Byol'
+    save_name = f'E{EPOCAS}_B{BATCH_SIZE}_S{INPUT_SIZE}_f3'
 
     # Build the pretext model, the pretext datamodule, and the trainer
     pretext_model = build_pretext_model()

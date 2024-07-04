@@ -5,13 +5,28 @@ from typing import Sequence
 from torchvision.models.resnet import resnet50
 import lightning as L
 from torchvision.models.segmentation.deeplabv3 import ASPP
+from torchmetrics import JaccardIndex, F1Score
+
+
+@torch.no_grad()
+def deactivate_requires_grad(model: nn.Module):
+    """Deactivates the requires_grad flag for all parameters of a model."""
+    for param in model.parameters():
+        param.requires_grad = False
+
 
 class DeepLabV3Model(L.LightningModule):
-    def __init__(self, backbone=None, pred_head=None, num_classes=6):
+    def __init__(self, backbone=None, pred_head=None, num_classes=6, learning_rate=0.001, freeze_backbone=False):
         super().__init__()
         self.backbone = backbone if backbone else DeepLabV3Backbone()
         self.pred_head = pred_head if pred_head else DeepLabV3PredictionHead(num_classes=num_classes)
         self.loss_fn = torch.nn.CrossEntropyLoss()
+        self.learnign_rate = learning_rate
+        if freeze_backbone:
+            deactivate_requires_grad(self.backbone)
+            
+        self.IoU = JaccardIndex(num_classes=num_classes, task='multiclass')
+        self.F1 = F1Score(num_classes=num_classes, task='multiclass')
 
     def forward(self, x):
         input_shape = x.shape[-2:]
@@ -22,25 +37,37 @@ class DeepLabV3Model(L.LightningModule):
 
     def training_step(self, batch, batch_idx):
         X, y = batch
-        y_hat = self.forward(X)
-        # Compute the loss
-        loss = self.loss_fn(y_hat, y.squeeze(1).to(torch.long))
-        # Logging to TensorBoard (if installed) by default
+        logits = self.forward(X.float())
+        loss = self.loss_fn(logits, y.squeeze(1).to(torch.long))
+        
+        pred = torch.argmax(logits, dim=1, keepdim=True)
+
+        f1 = self.F1(pred, y)
+        IoU = self.IoU(pred, y)
+        
         self.log("train_loss", loss)
+        self.log("train_F1", f1)
+        self.log("train_IoU", IoU)
         return loss
 
     def validation_step(self, batch, batch_idx):
-        # this is the validation loop
         X, y = batch
-        y_hat = self.forward(X)
-        # Compute the loss
-        val_loss = self.loss_fn(y_hat, y.squeeze(1).to(torch.long))
-        # Logging to TensorBoard (if installed) by default
+        logits = self.forward(X.float())
+        val_loss = self.loss_fn(logits, y.squeeze(1).to(torch.long))
+        
+        pred = torch.argmax(logits, dim=1, keepdim=True)
+
+        val_f1 = self.F1(pred, y)
+        val_IoU = self.IoU(pred, y)
+        
         self.log("val_loss", val_loss)
+        self.log("val_F1", val_f1)
+        self.log("val_IoU", val_IoU)
         return val_loss
+            
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(params=self.parameters(), lr=0.001)
+        optimizer = torch.optim.Adam(params=self.parameters(), lr=self.learnign_rate)
         return optimizer
     
 class DeepLabV3Backbone(nn.Module):

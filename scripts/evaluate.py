@@ -56,18 +56,21 @@ def build_downstream_datamodule() -> L.LightningDataModule:
 
 def load_downstream_model(checkpoint_filename) -> L.LightningModule:
     
-    head = PredictionHead(num_classes=6, in_channels=2048)
+    # head = PredictionHead(num_classes=6, in_channels=2048)    
+    # ead = dlv3.DeepLabV3PredictionHead(num_classes=6)
     
-    backbone = dlv3.DeepLabV3Backbone()
+    # backbone = dlv3.DeepLabV3Backbone()
     
-    downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
-                                                                num_classes=6,
-                                                                backbone=backbone,
-                                                                head=head,
-                                                                loss_fn=torch.nn.CrossEntropyLoss(),
-                                                                learning_rate=0.007,
-                                                                freeze_backbone=False,
-                                                                )
+    # downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
+    #                                                             num_classes=6,
+    #                                                             backbone=backbone,
+    #                                                             head=head,
+    #                                                             loss_fn=torch.nn.CrossEntropyLoss(),
+    #                                                             learning_rate=0.007,
+    #                                                             freeze_backbone=False,
+    #                                                             )
+    
+    downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
     
     # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
     return downstream_model
@@ -76,7 +79,7 @@ def load_downstream_model(checkpoint_filename) -> L.LightningModule:
 
 # This function must not be changed. 
 def main(SSL_technique_prefix): 
-    import_name = 'best_downstream'
+    import_name = 'teste'
     
     # Load the pretrained model
     downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')
@@ -86,6 +89,7 @@ def main(SSL_technique_prefix):
     train_dl = downstream_datamodule.train_dataloader()
     val_dl   = downstream_datamodule.val_dataloader()
     test_dl  = downstream_datamodule.test_dataloader()    
+    print(f'Data loaded: {import_name}')
 
     # Compute and report the mIoU metric for each subset
     report_IoU(downstream_model, train_dl, prefix="   Training dataset")
