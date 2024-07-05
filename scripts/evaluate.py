@@ -78,7 +78,7 @@ def load_downstream_model(checkpoint_filename) -> L.LightningModule:
 
 # This function must not be changed. 
 def main(SSL_technique_prefix): 
-    import_name = 'teste'
+    import_name = 'pretreino_f3_seam_ai_100%'
     
     # Load the pretrained model
     downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')
@@ -91,11 +91,11 @@ def main(SSL_technique_prefix):
     print(f'Data loaded: {import_name}')
 
     # Compute and report the mIoU metric for each subset
-    print(len(iter(train_dl)))
+    # print(len(iter(train_dl)))
     report_IoU(downstream_model, train_dl, prefix="   Training dataset")
-    print(len(iter(val_dl)))
+    # print(len(iter(val_dl)))
     report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
-    print(len(iter(test_dl)))
+    # print(len(iter(test_dl)))
     report_IoU(downstream_model, test_dl,  prefix="       Test dataset")
 
 if __name__ == "__main__":

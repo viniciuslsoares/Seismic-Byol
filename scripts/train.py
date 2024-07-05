@@ -7,7 +7,7 @@ import lightning as L
 import models.deeplabv3 as dlv3
 from lightning.pytorch.callbacks import EarlyStopping
 from models.upconv_classifier import SegmentationModel, PredictionHead
-from data_modules.seismic import F3SeismicDataModule
+from data_modules.seismic import F3SeismicDataModule, ParihakaSeismicDataModule
 from pytorch_lightning.loggers import CSVLogger
 
 
@@ -33,8 +33,8 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename):
 # You must not change this function (Check with the professor if you need to change it).
 
 def build_downstream_datamodule(batch_size, cap) -> L.LightningDataModule:
-    print("Number of files in the downstream dataset: ", num_files("../data/f3/images/train/"))
-    return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
+    print("Number of files in the downstream dataset: ", num_files("../data/seam_ai/images/train/"))
+    return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
 
 
 ### --------------- LightningModule --------------------------------------------------
@@ -89,17 +89,16 @@ def build_lightning_trainer(SSL_technique_prefix, save_name:str, supervised:bool
         accelerator="gpu",
         max_epochs=epocas,
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
-        callbacks=[checkpoint_callback, early_stopping_callback],
-        # callbacks=[checkpoint_callback],
+        # callbacks=[checkpoint_callback, early_stopping_callback],
+        callbacks=[checkpoint_callback],
         # strategy='ddp_find_unused_parameters_true',
         )
     
 ### --------------- Main -----------------------------------------------------------------
 
-# This function must not be changed. 
 def main(SSL_technique_prefix):
     
-    EPOCAS = 5
+    EPOCAS = 50
     BATCH_SIZE = 8
     CAP = 1
     SUPERVISED = False
@@ -107,7 +106,7 @@ def main(SSL_technique_prefix):
     
     import_name = 'E300_B32_S256_f3'
     # save_name = f'E{EPOCAS}_B{BATCH_SIZE}_{CAP*100}%_LR0.005'
-    save_name = 'teste'
+    save_name = 'pretreino_f3_seam_ai_100%'
 
     # Load the pretrained backbone
     pretrained_backbone_checkpoint_filename = f"../saves/backbones/{SSL_technique_prefix}_{import_name}.pth"
@@ -118,7 +117,11 @@ def main(SSL_technique_prefix):
     downstream_datamodule = build_downstream_datamodule(BATCH_SIZE, CAP)
     lightning_trainer = build_lightning_trainer(SSL_technique_prefix, save_name, SUPERVISED, EPOCAS)
 
-    # Fit the pretext model using the pretext_datamodule
+    # train_dl = downstream_datamodule.train_dataloader()
+    # print(len(iter(train_dl)))
+    # val_dl   = downstream_datamodule.val_dataloader()
+    # print(len(iter(val_dl)))
+
     lightning_trainer.fit(downstream_model, downstream_datamodule)
 
 if __name__ == "__main__":
