@@ -258,7 +258,8 @@ class F3SeismicDataModule(L.LightningDataModule):
             dataloader
                 The validation dataloader. 
         """        
-        N = int(self.cap*len(self.val_dataset))
+        # N = int(self.cap*len(self.val_dataset))
+        N = len(self.val_dataset)
         dataset = torch.utils.data.Subset(self.val_dataset, self.val_indices[0:N])
         return DataLoader(
             dataset, batch_size=self.batch_size, 
@@ -283,7 +284,8 @@ class F3SeismicDataModule(L.LightningDataModule):
             dataloader
                 The test dataloader. 
         """        
-        N = int(self.cap*len(self.test_dataset))
+        # N = int(self.cap*len(self.test_dataset))
+        N = len(self.test_dataset)
         dataset = torch.utils.data.Subset(self.test_dataset, self.test_indices[0:N])
         return DataLoader(
             dataset, batch_size=self.batch_size, 
@@ -518,7 +520,8 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
             dataloader
                 The validation dataloader. 
         """        
-        N = int(self.cap*len(self.val_dataset))
+        # N = int(self.cap*len(self.val_dataset))
+        N = len(self.val_dataset)
         dataset = torch.utils.data.Subset(self.val_dataset, self.val_indices[0:N])
         return DataLoader(
             dataset, batch_size=self.batch_size, 
@@ -543,7 +546,8 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
             dataloader
                 The test dataloader. 
         """        
-        N = int(self.cap*len(self.test_dataset))
+        # N = int(self.cap*len(self.test_dataset))
+        N = len(self.test_dataset)
         dataset = torch.utils.data.Subset(self.test_dataset, self.test_indices[0:N])
         return DataLoader(
             dataset, batch_size=self.batch_size, 

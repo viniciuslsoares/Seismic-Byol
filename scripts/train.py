@@ -56,7 +56,7 @@ def build_downstream_model(backbone, freeze) -> L.LightningModule:
     #                         freeze_backbone=freeze)
     
     return dlv3.DeepLabV3Model(num_classes=6,
-                                 backbone=backbone,
+                                 backbone=None,
                                  learning_rate=0.001,
                                  freeze_backbone=freeze)
 
@@ -91,7 +91,7 @@ def build_lightning_trainer(SSL_technique_prefix, save_name:str, supervised:bool
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         # callbacks=[checkpoint_callback, early_stopping_callback],
         callbacks=[checkpoint_callback],
-        # strategy='ddp_find_unused_parameters_true',
+        # strategy='ddp_find_unused_parameters_true',,
         )
     
 ### --------------- Main -----------------------------------------------------------------
@@ -100,13 +100,13 @@ def main(SSL_technique_prefix):
     
     EPOCAS = 50
     BATCH_SIZE = 8
-    CAP = 1
+    CAP = 0.1
     SUPERVISED = False
     FREEZE = False
     
     import_name = 'E300_B32_S256_f3'
     # save_name = f'E{EPOCAS}_B{BATCH_SIZE}_{CAP*100}%_LR0.005'
-    save_name = 'pretreino_f3_seam_ai_100%'
+    save_name = 'pretreino_f3_seam_ai_10%'
 
     # Load the pretrained backbone
     pretrained_backbone_checkpoint_filename = f"../saves/backbones/{SSL_technique_prefix}_{import_name}.pth"

@@ -5,7 +5,7 @@ import torch
 import lightning as L
 
 import models.deeplabv3 as dlv3
-from data_modules.seismic import F3SeismicDataModule
+from data_modules.seismic import F3SeismicDataModule, ParihakaSeismicDataModule
 from models.upconv_classifier import SegmentationModel, PredictionHead
 
 ### - Extra Code --------------------------------------------------------------------
@@ -45,7 +45,7 @@ def report_IoU(model, dataset_dl, prefix=""):
 
 # This function must instantiate and configure the datamodule for the downstream task.
 def build_downstream_datamodule() -> L.LightningDataModule:
-    return F3SeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+    return ParihakaSeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
 
 ### ------------- Pretrained Model --------------------------------------------------
 
@@ -78,7 +78,7 @@ def load_downstream_model(checkpoint_filename) -> L.LightningModule:
 
 # This function must not be changed. 
 def main(SSL_technique_prefix): 
-    import_name = 'pretreino_f3_seam_ai_100%'
+    import_name = 'pretreino_f3_freeze_seam_ai_100%'
     
     # Load the pretrained model
     downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')
