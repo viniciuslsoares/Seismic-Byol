@@ -5,8 +5,11 @@ import torch
 import lightning as L
 
 import models.deeplabv3 as dlv3
+import models.deeplabv3_2 as dlv3_2
 from data_modules.seismic import F3SeismicDataModule, ParihakaSeismicDataModule
 from models.upconv_classifier import SegmentationModel, PredictionHead
+import torchvision.models.segmentation as models
+
 
 ### - Extra Code --------------------------------------------------------------------
 from torchmetrics import JaccardIndex
@@ -59,17 +62,19 @@ def load_downstream_model(checkpoint_filename) -> L.LightningModule:
     # ead = dlv3.DeepLabV3PredictionHead(num_classes=6)
     
     # backbone = dlv3.DeepLabV3Backbone()
+    backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
     
-    # downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
-    #                                                             num_classes=6,
-    #                                                             backbone=backbone,
-    #                                                             head=head,
-    #                                                             loss_fn=torch.nn.CrossEntropyLoss(),
-    #                                                             learning_rate=0.007,
-    #                                                             freeze_backbone=False,
-    #                                                             )
+    downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
+                                                                num_classes=6,
+                                                                backbone=backbone,
+                                                                head=None,
+                                                                loss_fn=torch.nn.CrossEntropyLoss(),
+                                                                learning_rate=0.007,
+                                                                freeze_backbone=False,
+                                                                )
     
-    downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
+    # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
+    # downstream_model = dlv3_2.DeepLabV3Module.load_from_checkpoint(checkpoint_filename)
     
     # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
     return downstream_model
@@ -78,7 +83,7 @@ def load_downstream_model(checkpoint_filename) -> L.LightningModule:
 
 # This function must not be changed. 
 def main(SSL_technique_prefix): 
-    import_name = 'pretreino_f3_freeze_seam_ai_100%'
+    import_name = 'pretreino_COCO_seam_ai_1%'
     
     # Load the pretrained model
     downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')

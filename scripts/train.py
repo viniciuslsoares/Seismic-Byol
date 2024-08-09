@@ -5,11 +5,13 @@ import torch
 import lightning as L
 
 import models.deeplabv3 as dlv3
+import models.deeplabv3_2 as dlv3_2
 from lightning.pytorch.callbacks import EarlyStopping
 from models.upconv_classifier import SegmentationModel, PredictionHead
 from data_modules.seismic import F3SeismicDataModule, ParihakaSeismicDataModule
 from pytorch_lightning.loggers import CSVLogger
 
+import torchvision.models.segmentation as models
 
 ### utilities 
 
@@ -23,8 +25,12 @@ def num_files(path):
 # This function should load the backbone weights
 def load_pretrained_backbone(pretrained_backbone_checkpoint_filename):
 
-    backbone = dlv3.DeepLabV3Backbone()
-    backbone.load_state_dict(torch.load(pretrained_backbone_checkpoint_filename))
+    # backbone = dlv3.DeepLabV3Backbone()
+    # backbone.load_state_dict(torch.load(pretrained_backbone_checkpoint_filename))
+    
+    model = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1')
+    backbone = model.backbone
+    
     return backbone
 
 ### ---------- DataModule -----------------------------------------------------------
@@ -45,20 +51,15 @@ def build_downstream_datamodule(batch_size, cap) -> L.LightningDataModule:
 
 def build_downstream_model(backbone, freeze) -> L.LightningModule:
     
-    # pred_head = PredictionHead(num_classes=6, in_channels=2048)
-    # pred_head = dlv3.DeepLabV3PredictionHead(num_classes=6)
+    pred_head = dlv3.DeepLabV3PredictionHead(num_classes=6)
     
-    # return SegmentationModel(num_classes=6,
-    #                         backbone=None,
-    #                         head=pred_head,
-    #                         loss_fn=torch.nn.CrossEntropyLoss(),
-    #                         learning_rate=0.001,
-    #                         freeze_backbone=freeze)
+    return SegmentationModel(num_classes=6,
+                            backbone=backbone,
+                            head=pred_head,
+                            loss_fn=torch.nn.CrossEntropyLoss(),
+                            learning_rate=0.001,
+                            freeze_backbone=freeze)
     
-    return dlv3.DeepLabV3Model(num_classes=6,
-                                 backbone=None,
-                                 learning_rate=0.001,
-                                 freeze_backbone=freeze)
 
 ### --------------- Trainer -------------------------------------------------------------
 
@@ -100,13 +101,14 @@ def main(SSL_technique_prefix):
     
     EPOCAS = 50
     BATCH_SIZE = 8
-    CAP = 0.1
-    SUPERVISED = False
+    CAP = 1
+    SUPERVISED = False 
     FREEZE = False
     
     import_name = 'E300_B32_S256_f3'
     # save_name = f'E{EPOCAS}_B{BATCH_SIZE}_{CAP*100}%_LR0.005'
-    save_name = 'pretreino_f3_seam_ai_10%'
+    save_name = 'pretreino_COCO_seam_ai_100%'
+    # save_name = 'teste'
 
     # Load the pretrained backbone
     pretrained_backbone_checkpoint_filename = f"../saves/backbones/{SSL_technique_prefix}_{import_name}.pth"
@@ -118,9 +120,9 @@ def main(SSL_technique_prefix):
     lightning_trainer = build_lightning_trainer(SSL_technique_prefix, save_name, SUPERVISED, EPOCAS)
 
     # train_dl = downstream_datamodule.train_dataloader()
-    # print(len(iter(train_dl)))
+    # print('train dataloader', len(iter(train_dl)))
     # val_dl   = downstream_datamodule.val_dataloader()
-    # print(len(iter(val_dl)))
+    # print('val dataloader', len(iter(val_dl)))
 
     lightning_trainer.fit(downstream_model, downstream_datamodule)
 

@@ -6,6 +6,8 @@ from torch.nn import functional as F
 from torch import nn
 from models.deeplabv3 import DeepLabV3Backbone, DeepLabV3PredictionHead
 from torchmetrics import JaccardIndex, F1Score
+from collections import OrderedDict
+
 
 
 # --- Utilities ---------------------------------------------------------
@@ -68,6 +70,8 @@ class SegmentationModel(L.LightningModule):
         def forward(self, x):
             input_shape = x.shape[-2:]  # Save the original input shape
             features = self.backbone(x)
+            if isinstance(features, OrderedDict):
+                features = features['out']
             x = self.prediction_head(features)
             return F.interpolate(x, size=input_shape, mode="bilinear", align_corners=False)
             
