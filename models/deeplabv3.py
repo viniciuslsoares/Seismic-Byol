@@ -6,6 +6,8 @@ from torchvision.models.resnet import resnet50
 import lightning as L
 from torchvision.models.segmentation.deeplabv3 import ASPP
 from torchmetrics import JaccardIndex, F1Score
+from collections import OrderedDict
+
 
 
 @torch.no_grad()
@@ -28,12 +30,20 @@ class DeepLabV3Model(L.LightningModule):
         self.IoU = JaccardIndex(num_classes=num_classes, task='multiclass')
         self.F1 = F1Score(num_classes=num_classes, task='multiclass')
 
+    # def forward(self, x):
+    #     input_shape = x.shape[-2:]
+    #     h = self.backbone(x)
+    #     z = self.pred_head(h)
+    #     # Upscaling
+    #     return F.interpolate(z, size=input_shape, mode="bilinear", align_corners=False)
+
     def forward(self, x):
-        input_shape = x.shape[-2:]
-        h = self.backbone(x)
-        z = self.pred_head(h)
-        # Upscaling
-        return F.interpolate(z, size=input_shape, mode="bilinear", align_corners=False)
+        input_shape = x.shape[-2:]  # Save the original input shape
+        features = self.backbone(x)
+        if isinstance(features, OrderedDict):
+            features = features['out']
+        x = self.pred_head(features)
+        return F.interpolate(x, size=input_shape, mode="bilinear", align_corners=False)
 
     def training_step(self, batch, batch_idx):
         X, y = batch
@@ -63,8 +73,7 @@ class DeepLabV3Model(L.LightningModule):
         self.log("val_loss", val_loss)
         self.log("val_F1", val_f1)
         self.log("val_IoU", val_IoU)
-        return val_loss
-            
+        return val_loss   
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(params=self.parameters(), lr=self.learning_rate)

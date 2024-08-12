@@ -58,32 +58,30 @@ def build_downstream_datamodule() -> L.LightningDataModule:
 
 def load_downstream_model(checkpoint_filename) -> L.LightningModule:
     
-    # head = PredictionHead(num_classes=6, in_channels=2048)    
-    # ead = dlv3.DeepLabV3PredictionHead(num_classes=6)
+    # head = PredictionHead(num_classes=6, in_channels=2048)
     
-    # backbone = dlv3.DeepLabV3Backbone()
-    backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
+    head = dlv3.DeepLabV3PredictionHead(num_classes=6)    
+    
+    backbone = dlv3.DeepLabV3Backbone()
+    # backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
     
     downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
-                                                                num_classes=6,
                                                                 backbone=backbone,
-                                                                head=None,
-                                                                loss_fn=torch.nn.CrossEntropyLoss(),
-                                                                learning_rate=0.007,
-                                                                freeze_backbone=False,
-                                                                )
+                                                                head=head)
     
-    # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
-    # downstream_model = dlv3_2.DeepLabV3Module.load_from_checkpoint(checkpoint_filename)
     
-    # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename)
+    # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename,
+    #                                                             backbone=backbone,
+    #                                                             head=head)
+    
     return downstream_model
 
 ### --------------- Main -------------------------------------------------------------
 
 # This function must not be changed. 
 def main(SSL_technique_prefix): 
-    import_name = 'pretreino_COCO_seam_ai_1%'
+    import_name = 'pretreino_COCO_seam_ai_1s%'
+    # import_name = 'supervised_f3_100%'
     
     # Load the pretrained model
     downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')

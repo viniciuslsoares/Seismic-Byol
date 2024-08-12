@@ -25,8 +25,7 @@ def num_files(path):
 # This function should load the backbone weights
 def load_pretrained_backbone(pretrained_backbone_checkpoint_filename):
 
-    # backbone = dlv3.DeepLabV3Backbone()
-    # backbone.load_state_dict(torch.load(pretrained_backbone_checkpoint_filename))
+    backbone = dlv3.DeepLabV3Backbone()
     
     model = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1')
     backbone = model.backbone
@@ -97,18 +96,31 @@ def build_lightning_trainer(SSL_technique_prefix, save_name:str, supervised:bool
     
 ### --------------- Main -----------------------------------------------------------------
 
-def main(SSL_technique_prefix):
+def train_func(epocas:int, 
+               batch_size:int, 
+               cap:float, 
+               import_name:str, 
+               save_name:str,
+               supervised:bool = False, 
+               freeze:bool = False, 
+               SSL_technique_prefix:str = "Byol",
+               ):
     
-    EPOCAS = 50
-    BATCH_SIZE = 8
-    CAP = 1
-    SUPERVISED = False 
-    FREEZE = False
+    # EPOCAS = 50
+    # BATCH_SIZE = 8
+    # CAP = 1
+    # SUPERVISED = False 
+    # FREEZE = False
     
-    import_name = 'E300_B32_S256_f3'
+    EPOCAS = epocas
+    BATCH_SIZE = batch_size
+    CAP = cap
+    SUPERVISED = supervised
+    FREEZE = freeze
+    
+    # import_name = 'E300_B32_S256_f3'
     # save_name = f'E{EPOCAS}_B{BATCH_SIZE}_{CAP*100}%_LR0.005'
-    save_name = 'pretreino_COCO_seam_ai_100%'
-    # save_name = 'teste'
+    # save_name = 'pretreino_COCO_seam_ai_100%'
 
     # Load the pretrained backbone
     pretrained_backbone_checkpoint_filename = f"../saves/backbones/{SSL_technique_prefix}_{import_name}.pth"
@@ -126,5 +138,5 @@ def main(SSL_technique_prefix):
 
     lightning_trainer.fit(downstream_model, downstream_datamodule)
 
-if __name__ == "__main__":
-    main("Byol")
+# if __name__ == "__main__":
+    # train_func()
