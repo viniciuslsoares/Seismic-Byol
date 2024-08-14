@@ -84,8 +84,10 @@ class DeepLabV3Backbone(nn.Module):
     def __init__(self, num_classes=6, pretrain=''):
         super().__init__()
         if pretrain == '':
+            print('********** Backbone from scratch carregado **********')
             self.RN50model = resnet50(replace_stride_with_dilation=[False, True, True])
         elif pretrain == 'imagenet':
+            print('********** Backbone IMAGENET carregado **********')
             weights = torchvision.models.ResNet50_Weights.IMAGENET1K_V1            
             self.RN50model = resnet50(replace_stride_with_dilation=[False, True, True],
                                       weights=weights)

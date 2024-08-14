@@ -211,6 +211,7 @@ class F3SeismicDataModule(L.LightningDataModule):
         self.train_indices = list(range(len(self.train_dataset)))
         self.val_indices   = list(range(len(self.val_dataset)))
         self.test_indices  = list(range(len(self.test_dataset)))
+        random.seed(42)
         if self.shuffle_dataset_indices:
             random.shuffle(self.train_indices)
             random.shuffle(self.val_indices)
@@ -473,6 +474,7 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         self.train_indices = list(range(len(self.train_dataset)))
         self.val_indices   = list(range(len(self.val_dataset)))
         self.test_indices  = list(range(len(self.test_dataset)))
+        random.seed(42)
         if self.shuffle_dataset_indices:
             random.shuffle(self.train_indices)
             random.shuffle(self.val_indices)
