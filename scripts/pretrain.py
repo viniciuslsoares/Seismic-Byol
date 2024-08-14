@@ -11,7 +11,7 @@ from pathlib import Path
 import models.deeplabv3 as dlv3
 import models.byol as byol_module
 from transforms.byol import BYOLTransform
-from data_modules.Parihaka_dataset import ParihakaDataModule as ByolDataModule
+from data_modules.Pretrain_dataset import PretrainDataModule as ByolDataModule
 from pytorch_lightning.loggers import CSVLogger
 
 # This function must save the weights of the pretrained model

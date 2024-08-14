@@ -101,14 +101,14 @@ def load_downstream_model(checkpoint_filename, mode:str = 'byol') -> L.Lightning
 def eval_func(import_name:str,
               mode:str = 'byol',
               dataset:str = 'f3',
-              SSL_technique_prefix:str = 'Byol',
+              repetition:str = 'Vx',
               ): 
 
 
     # import_name = 'pretreino_COCO_seam_ai_1s%'
     
     # Load the pretrained model
-    downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt', mode=mode)
+    downstream_model = load_downstream_model(f'../saves/models/{repetition}/{import_name}.ckpt', mode=mode)
 
     # Retrieve the train, validation and test sets.
     downstream_datamodule = build_downstream_datamodule(data=dataset)
@@ -130,4 +130,4 @@ def eval_func(import_name:str,
 
 
 # if __name__ == "__main__":
-#     main(SSL_technique_prefix)
+#     eval_func()

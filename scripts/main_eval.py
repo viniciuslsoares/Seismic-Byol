@@ -63,7 +63,7 @@ def main():
                 iou, f1 = eval_func(import_name=import_name,
                             mode=mode,
                             dataset=data,
-                            SSL_technique_prefix='Byol'
+                            repetition=REPETITIONS,
                             )
                 
                 with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
