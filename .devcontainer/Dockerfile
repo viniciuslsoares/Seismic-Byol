@@ -66,7 +66,7 @@ RUN python -m pip install --upgrade pip setuptools pytest && \
         scipy \
         torchmetrics \
         torchvision
-
+        
 
 # Change shell for user b
 RUN chsh --shell /bin/bash $USERNAME

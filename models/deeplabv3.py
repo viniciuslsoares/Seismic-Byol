@@ -7,6 +7,7 @@ import lightning as L
 from torchvision.models.segmentation.deeplabv3 import ASPP
 from torchmetrics import JaccardIndex, F1Score
 from collections import OrderedDict
+import torchvision
 
 
 
@@ -80,9 +81,14 @@ class DeepLabV3Model(L.LightningModule):
         return optimizer
     
 class DeepLabV3Backbone(nn.Module):
-    def __init__(self, num_classes=6):
+    def __init__(self, num_classes=6, pretrain=''):
         super().__init__()
-        self.RN50model = resnet50(replace_stride_with_dilation=[False, True, True])
+        if pretrain == '':
+            self.RN50model = resnet50(replace_stride_with_dilation=[False, True, True])
+        elif pretrain == 'imagenet':
+            weights = torchvision.models.ResNet50_Weights.IMAGENET1K_V1            
+            self.RN50model = resnet50(replace_stride_with_dilation=[False, True, True],
+                                      weights=weights)
     
     def freeze_weights(self):
         for param in self.RN50model.parameters():

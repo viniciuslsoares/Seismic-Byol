@@ -8,6 +8,8 @@ from torch.nn.functional import cosine_similarity
 from torch import Tensor
 from typing import List, Optional, Sequence, Tuple, Union
 from lightly.utils.scheduler import cosine_schedule
+from collections import OrderedDict
+
 
 # --- Utilities ---------------------------------------------------------
 
@@ -155,12 +157,16 @@ class BYOLModel(L.LightningModule):
 
     def forward(self, x):
         y = self.backbone(x)
+        if isinstance(y, OrderedDict):
+            y = y['out']
         z = self.projection_head(y)
         p = self.prediction_head(z)
         return p
 
     def forward_momentum(self, x):
         y = self.backbone_momentum(x)
+        if isinstance(y, OrderedDict):
+            y = y['out']
         z = self.projection_head_momentum(y)
         z = z.detach()
         return z
