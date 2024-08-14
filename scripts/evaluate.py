@@ -19,7 +19,6 @@ def evaluate_model(model, dataset_dl):
     # Inicialize JaccardIndex metric
     jaccard = JaccardIndex(task="multiclass", num_classes=6)
     f1 = F1Score(num_classes=6, task="multiclass")
-    # Set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # For each batch, compute the predictions and compare with the labels.
@@ -36,6 +35,7 @@ def evaluate_model(model, dataset_dl):
             predictions = torch.argmax(logits, dim=1, keepdim=True)
             jaccard(predictions, y)
             f1_score = f1(predictions, y)
+            
     # Return a tuple with the number of correct predictions and the total number of predictions
     return (float(jaccard.compute().to("cpu"))), (float(f1_score.to("cpu")))
 
@@ -43,64 +43,91 @@ def report_IoU(model, dataset_dl, prefix=""):
     iou, f1 = evaluate_model(model, dataset_dl)
     print(prefix + " IoU = {:0.4f}".format(iou))
     print(prefix + " F1 = {:0.4f}".format(f1))
+    return iou, f1
 
 ### ---------- DataModule -----------------------------------------------------------
 
 # This function must instantiate and configure the datamodule for the downstream task.
-def build_downstream_datamodule() -> L.LightningDataModule:
-    return ParihakaSeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+def build_downstream_datamodule(data) -> L.LightningDataModule:
+    
+    if data == 'f3':
+        print("F3 datas being used")
+        return F3SeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+
+    elif data == 'parihaka':
+        print("Parihaka datas being used")
+        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+        
+    else:
+        raise ValueError(f"Unknown dataset: {data}")
 
 ### ------------- Pretrained Model --------------------------------------------------
 
 # This function must instantiate the downstream model and load its weights
 # from checkpoint_filename.
-# Weights saved by the *_train.py script.
 
-def load_downstream_model(checkpoint_filename) -> L.LightningModule:
+def load_downstream_model(checkpoint_filename, mode:str = 'byol') -> L.LightningModule:
     
-    # head = PredictionHead(num_classes=6, in_channels=2048)
+    backbone = models.deeplabv3_resnet50().backbone
+
+    if mode == 'byol' or mode == 'supervised':
+        print('***** Backbone carregado *****')    
     
-    head = dlv3.DeepLabV3PredictionHead(num_classes=6)    
+    elif mode == 'coco':
+        print('***** Backbone COCO carregado *****')
+        backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
+        # Just to ensure that the model is the same as the one used in the training
     
-    backbone = dlv3.DeepLabV3Backbone()
-    # backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
-    
+    elif mode == 'imagenet':
+        print('***** Backbone IMAGENET carregado *****')
+        backbone = dlv3.DeepLabV3Backbone(num_classes=6, pretrain='imagenet')
+        # This backbone is slightly different from the others, so it is necessary to load it again
+
+    pred_head = dlv3.DeepLabV3PredictionHead(num_classes=6)    
+        
     downstream_model = SegmentationModel.load_from_checkpoint(checkpoint_filename,
+                                                                num_classes=6,                                                             
                                                                 backbone=backbone,
-                                                                head=head)
-    
-    
-    # downstream_model = dlv3.DeepLabV3Model.load_from_checkpoint(checkpoint_filename,
-    #                                                             backbone=backbone,
-    #                                                             head=head)
+                                                                head=pred_head,
+                                                                loss_fn=torch.nn.CrossEntropyLoss(),
+                                                                learning_rate=0.001,
+                                                                freeze_backbone=False)
     
     return downstream_model
 
 ### --------------- Main -------------------------------------------------------------
 
 # This function must not be changed. 
-def main(SSL_technique_prefix): 
-    import_name = 'pretreino_COCO_seam_ai_1s%'
-    # import_name = 'supervised_f3_100%'
+def eval_func(import_name:str,
+              mode:str = 'byol',
+              dataset:str = 'f3',
+              SSL_technique_prefix:str = 'Byol',
+              ): 
+
+
+    # import_name = 'pretreino_COCO_seam_ai_1s%'
     
     # Load the pretrained model
-    downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt')
+    downstream_model = load_downstream_model(f'../saves/models/{SSL_technique_prefix}_{import_name}.ckpt', mode=mode)
 
     # Retrieve the train, validation and test sets.
-    downstream_datamodule = build_downstream_datamodule()
+    downstream_datamodule = build_downstream_datamodule(data=dataset)
     train_dl = downstream_datamodule.train_dataloader()
     val_dl   = downstream_datamodule.val_dataloader()
     test_dl  = downstream_datamodule.test_dataloader()    
-    print(f'Data loaded: {import_name}')
+    print(f' ----------- Data loaded: {import_name}')
+
 
     # Compute and report the mIoU metric for each subset
-    # print(len(iter(train_dl)))
-    report_IoU(downstream_model, train_dl, prefix="   Training dataset")
-    # print(len(iter(val_dl)))
-    report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
-    # print(len(iter(test_dl)))
-    report_IoU(downstream_model, test_dl,  prefix="       Test dataset")
+    train_iou, train_f1 = report_IoU(downstream_model, train_dl, prefix="   Training dataset")
+    val_iou, val_f1 = report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
+    test_iou, test_f1 = report_IoU(downstream_model, test_dl,  prefix="       Test dataset")
 
-if __name__ == "__main__":
-    SSL_technique_prefix = "Byol"
-    main(SSL_technique_prefix)
+
+
+    return (train_iou, val_iou, test_iou), (train_f1, val_f1, test_f1)
+
+
+
+# if __name__ == "__main__":
+#     main(SSL_technique_prefix)

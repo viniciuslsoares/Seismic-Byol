@@ -5,6 +5,7 @@ from torch import nn
 import torch
 import lightning as L
 import pytorch_lightning as pl
+import torchvision
 
 from pathlib import Path
 import models.deeplabv3 as dlv3
@@ -35,7 +36,7 @@ def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
                             min_scale=0,
                             degrees=5,
                             r_prob=0.0,
-                            h_prob=0.0,
+                            h_prob=0.5,
                             v_prob=0.0,
                             collor_jitter_prob=0,
                             grayscale_prob=0,
@@ -43,8 +44,12 @@ def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
                             solarize_prob=0.0
                             )
     # Create the datamodule
-    # print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/pretrain/"))
-    return ByolDataModule(root_dir="../data/f3/images/",
+    print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/train/"))
+    # return ByolDataModule(root_dir="../data/f3/images/",
+    #                             batch_size=batch,
+    #                             transform=transform)
+    
+    return ByolDataModule(root_dir="../data/seam_ai/images/",
                                 batch_size=batch,
                                 transform=transform)
 
@@ -56,7 +61,11 @@ def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
 
 def build_pretext_model() -> L.LightningModule:
     # Build the backbone
-    backbone = dlv3.DeepLabV3Backbone()
+    # backbone = dlv3.DeepLabV3Backbone()
+    
+    backbone = torchvision.models.segmentation.deeplabv3_resnet50().backbone
+    
+    
     # Loss function and projection head already inside LightningModule
     # Build the pretext model
     return byol_module.BYOLModel(backbone=backbone,
@@ -71,6 +80,7 @@ def build_pretext_model() -> L.LightningModule:
 def build_lightning_trainer(save_name:str, epocas:int) -> L.Trainer:
     return L.Trainer(
         accelerator="gpu",
+        devices=[1],
         max_epochs=epocas,
         # max_steps=10500,
         enable_checkpointing=False, 
@@ -88,8 +98,10 @@ def main(SSL_technique_prefix):
     BATCH_SIZE = 32
     INPUT_SIZE = 256
     
-    save_name = f'E{EPOCAS}_B{BATCH_SIZE}_S{INPUT_SIZE}_f3'
+    save_name = f'V1_E{EPOCAS}_B{BATCH_SIZE}_S{INPUT_SIZE}_parihaka'
+    # save_name = 'teste'
 
+    print(f"save name:{save_name}")
     # Build the pretext model, the pretext datamodule, and the trainer
     pretext_model = build_pretext_model()
     pretext_datamodule = build_pretext_datamodule(BATCH_SIZE, INPUT_SIZE)

@@ -5,7 +5,6 @@ import torch
 import lightning as L
 
 import models.deeplabv3 as dlv3
-import models.deeplabv3_2 as dlv3_2
 from lightning.pytorch.callbacks import EarlyStopping
 from models.upconv_classifier import SegmentationModel, PredictionHead
 from data_modules.seismic import F3SeismicDataModule, ParihakaSeismicDataModule
@@ -23,30 +22,49 @@ def num_files(path):
 ### ---------- PreTrain  ------------------------------------------------------------
 
 # This function should load the backbone weights
-def load_pretrained_backbone(pretrained_backbone_checkpoint_filename):
+def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='byol'):
 
-    backbone = dlv3.DeepLabV3Backbone()
+    # backbone direto do pytorch
+
+    backbone = models.deeplabv3_resnet50().backbone
+    if mode == 'byol':
+        print('***** Backbone carregado *****')
+        backbone.load_state_dict(torch.load(pretrained_backbone_checkpoint_filename))    
     
-    model = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1')
-    backbone = model.backbone
+    elif mode == 'supervised':
+        print('***** Backbone from scratch *****')
+        # Nenhum peso carregado no backbone
+    
+    elif mode == 'coco':
+        print('***** Backbone COCO carregado *****')
+        backbone = models.deeplabv3_resnet50(weights='COCO_WITH_VOC_LABELS_V1').backbone
+    
+    elif mode == 'imagenet':
+        print('***** Backbone IMAGENET carregado *****')
+        backbone = dlv3.DeepLabV3Backbone(num_classes=6, pretrain='imagenet')
     
     return backbone
 
 ### ---------- DataModule -----------------------------------------------------------
 
 # This function must instantiate and configure the datamodule for the downstream task.
-# You must not change this function (Check with the professor if you need to change it).
 
-def build_downstream_datamodule(batch_size, cap) -> L.LightningDataModule:
-    print("Number of files in the downstream dataset: ", num_files("../data/seam_ai/images/train/"))
-    return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
+def build_downstream_datamodule(batch_size, cap, data) -> L.LightningDataModule:
 
+    if data == 'parihaka':
+        print("Parihaka datas being used")
+        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
 
+    elif data == 'f3':
+        print("F3 datas being used")
+        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
+
+    else:
+        raise ValueError('Data not found. Choose between parihaka and f3')
+    
 ### --------------- LightningModule --------------------------------------------------
 
 # This function must instantiate and configure the downstream model
-# with the best parameters found for the seismic/HAR task.
-# You might change this code, but must ensure it returns a Lightning model.
 
 def build_downstream_model(backbone, freeze) -> L.LightningModule:
     
@@ -63,14 +81,13 @@ def build_downstream_model(backbone, freeze) -> L.LightningModule:
 ### --------------- Trainer -------------------------------------------------------------
 
 # This function must instantiate and configure the lightning trainer
-# with the best parameters found for the seismic/HAR task.
-# You might change this code, but must ensure you return a Lightning trainer.
-
 
 def build_lightning_trainer(SSL_technique_prefix, save_name:str, supervised:bool, epocas) -> L.Trainer:
     from lightning.pytorch.callbacks import ModelCheckpoint
+    
     # Configure the ModelCheckpoint object to save the best model 
     # according to validation loss
+    
     checkpoint_callback = ModelCheckpoint(
         monitor='val_IoU',
         dirpath=f'../saves/models/',
@@ -91,7 +108,8 @@ def build_lightning_trainer(SSL_technique_prefix, save_name:str, supervised:bool
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         # callbacks=[checkpoint_callback, early_stopping_callback],
         callbacks=[checkpoint_callback],
-        # strategy='ddp_find_unused_parameters_true',,
+        # strategy='ddp_find_unused_parameters_true',
+        # devices=[1]
         )
     
 ### --------------- Main -----------------------------------------------------------------
@@ -103,14 +121,10 @@ def train_func(epocas:int,
                save_name:str,
                supervised:bool = False, 
                freeze:bool = False, 
+               downstream_data:str = 'f3',
                SSL_technique_prefix:str = "Byol",
+               mode:str = 'byol'
                ):
-    
-    # EPOCAS = 50
-    # BATCH_SIZE = 8
-    # CAP = 1
-    # SUPERVISED = False 
-    # FREEZE = False
     
     EPOCAS = epocas
     BATCH_SIZE = batch_size
@@ -118,25 +132,26 @@ def train_func(epocas:int,
     SUPERVISED = supervised
     FREEZE = freeze
     
+    # EPOCAS = 50
+    # BATCH_SIZE = 8
+    # CAP = 1
+    # SUPERVISED = False 
+    # FREEZE = False
     # import_name = 'E300_B32_S256_f3'
     # save_name = f'E{EPOCAS}_B{BATCH_SIZE}_{CAP*100}%_LR0.005'
     # save_name = 'pretreino_COCO_seam_ai_100%'
 
     # Load the pretrained backbone
     pretrained_backbone_checkpoint_filename = f"../saves/backbones/{SSL_technique_prefix}_{import_name}.pth"
-    backbone = load_pretrained_backbone(pretrained_backbone_checkpoint_filename)
+    backbone = load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode=mode)
 
     # Build the downstream model, the downstream datamodule, and the trainer
     downstream_model = build_downstream_model(backbone, FREEZE)
-    downstream_datamodule = build_downstream_datamodule(BATCH_SIZE, CAP)
+    downstream_datamodule = build_downstream_datamodule(BATCH_SIZE, CAP, downstream_data)
     lightning_trainer = build_lightning_trainer(SSL_technique_prefix, save_name, SUPERVISED, EPOCAS)
 
-    # train_dl = downstream_datamodule.train_dataloader()
-    # print('train dataloader', len(iter(train_dl)))
-    # val_dl   = downstream_datamodule.val_dataloader()
-    # print('val dataloader', len(iter(val_dl)))
-
     lightning_trainer.fit(downstream_model, downstream_datamodule)
+
 
 # if __name__ == "__main__":
     # train_func()

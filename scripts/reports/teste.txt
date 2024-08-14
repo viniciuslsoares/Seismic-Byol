@@ -1,0 +1,6 @@
+Report of the evaluation of the models
+---------------------------------------
+Datas being used: ['f3', 'parihaka']
+Pretrains models: ['COCO', 'IMAGENET', 'sup']
+Caps: [0.01, 0.1, 0.5, 1.0]
+------------------ Pre on COCO and train on f3 ------------------
