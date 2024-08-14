@@ -7,8 +7,8 @@ from torch.utils.data import DataLoader, Dataset
 from pathlib import Path
 
 
-class ParihakaDataset(Dataset):
-    """Unsupervised dataset for parihaka for BYOL pretext task.
+class PretrainDataset(Dataset):
+    """Unsupervised dataset for Pretrain for BYOL pretext task.
     Parameters
     ----------
         data_dir: str
@@ -33,10 +33,9 @@ class ParihakaDataset(Dataset):
         if self.transform:
             return self.transform(img)
         else: 
-            return img
-        
+            return img  
     
-class ParihakaDataModule(L.LightningDataModule):
+class PretrainDataModule(L.LightningDataModule):
     def __init__(self, root_dir, batch_size=8, num_workers=None, transform=None):
         super().__init__()
         self.root_dir = root_dir
@@ -46,8 +45,7 @@ class ParihakaDataModule(L.LightningDataModule):
         self.setup()
 
     def setup(self, stage=None):
-        self.train_dataset = ParihakaDataset(Path(self.root_dir) / "train", transform=self.transform)
-        # self.val_dataset = ParihakaDataset(Path(self.root_dir) / "val", transform=self.transform)
+        self.train_dataset = PretrainDataset(Path(self.root_dir) / "train", transform=self.transform)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True, drop_last=True, num_workers=self.num_workers)
