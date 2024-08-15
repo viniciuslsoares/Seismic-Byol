@@ -34,11 +34,7 @@ def main():
     
     list_of_caps = [0.01, 0.1, 0.5, 1.0]
     
-    # Três GPUs para rodas os experimentos
-    # Posso separar os caps como 1, 10 e 50% e rodar em paralelo
-    # com o de 100% OU posso separar os dados e rodar em paralelo
-    # com todos os caps. Não sei qual o melhor a fazer.
-    
+    # Três GPUs para rodar os experimentos
     # 4090 -> todos os f3
     # A6000 -> f3, parihaka e both no parihaka
     # A6000 -> coco, imagenet e sup no parihaka

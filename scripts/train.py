@@ -50,12 +50,18 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
 # This function must instantiate and configure the datamodule for the downstream task.
 
 def build_downstream_datamodule(batch_size, cap, data) -> L.LightningDataModule:
+    
+    num_of_files = num_files(f"../data/{data}/images/train/")
+    print("Number of files in the pretext dataset: ", num_of_files)
+    path = f'../data/{data}/images/'
 
     if data == 'parihaka':
+        print(f'******* Path: {path} *******')
         print("Parihaka datas being used")
         return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
 
     elif data == 'f3':
+        print(f'******* Path: {path} *******')
         print("F3 datas being used")
         return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
 

@@ -10,6 +10,7 @@ import torchvision
 from pathlib import Path
 import models.deeplabv3 as dlv3
 import models.byol as byol_module
+import torchvision.models as models
 from transforms.byol import BYOLTransform
 from data_modules.Pretrain_dataset import PretrainDataModule as ByolDataModule
 from pytorch_lightning.loggers import CSVLogger
@@ -27,10 +28,8 @@ def num_files(path):
 ### ---------- DataModule -----------------------------------------------------------
 
 # This function must instantiate and configure the datamodule for the pretext task
-# with the best parameters found for the seismic/HAR task.
-# You might change this code, but must ensure it returns a Lightning DataModule.
 
-def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
+def build_pretext_datamodule(batch, input_size, data:str = 'pretext') -> L.LightningDataModule:
     # Build the transform object
     transform = BYOLTransform(input_size=input_size,
                             min_scale=0,
@@ -43,76 +42,81 @@ def build_pretext_datamodule(batch, input_size) -> L.LightningDataModule:
                             gaussian_blur_prob=0,
                             solarize_prob=0.0
                             )
-    # Create the datamodule
-    print("Number of files in the pretext dataset: ", num_files("../data/pretext/images/train/"))
-    # return ByolDataModule(root_dir="../data/f3/images/",
-    #                             batch_size=batch,
-    #                             transform=transform)
     
-    return ByolDataModule(root_dir="../data/seam_ai/images/",
+    assert data in ['pretext', 'seam_ai', 'f3'], f"Data {data} not found. Must be one of 'pretext', 'seam_ai' or 'f3'"
+    
+    num_of_files = num_files(f"../data/{data}/images/train/")
+    
+    # Create the datamodule
+    print("Number of files in the pretext dataset: ", num_of_files)
+    
+    path = f'../data/{data}/images/'
+    # The selection of path/train is inside of the datamodule
+    
+    print(f'******* Data Loaded: {data} *******')
+    print(f'******* Path: {path} *******')
+    
+    return ByolDataModule(root_dir=path,
                                 batch_size=batch,
-                                transform=transform)
+                                transform=transform), num_of_files
 
 ### --------------- LightningModule --------------------------------------------------
 
 # This function must instantiate and configure the pretext model
-# with the best parameters found for the seismic/HAR task.
-# You might change this code, but must ensure it returns a Lightning model.
 
-def build_pretext_model() -> L.LightningModule:
+def build_pretext_model(schedule:int=9000 ) -> L.LightningModule:
     # Build the backbone
-    # backbone = dlv3.DeepLabV3Backbone()
     
-    backbone = torchvision.models.segmentation.deeplabv3_resnet50().backbone
-    
-    
-    # Loss function and projection head already inside LightningModule
-    # Build the pretext model
+    backbone = models.segmentation.deeplabv3_resnet50().backbone
+        
     return byol_module.BYOLModel(backbone=backbone,
-                                learning_rate=0.1)
+                                learning_rate=0.1,
+                                schedule=schedule,
+                                )
     
 ### --------------- Trainer -------------------------------------------------------------
 
 # This function must instantiate and configure the lightning trainer
-# with the best parameters found for the seismic/HAR task.
-# You might change this code, but must ensure you return a Lightning trainer.
 
 def build_lightning_trainer(save_name:str, epocas:int) -> L.Trainer:
     return L.Trainer(
         accelerator="gpu",
-        devices=[1],
         max_epochs=epocas,
-        # max_steps=10500,
         enable_checkpointing=False, 
         logger=CSVLogger("logs", name="Byol", version=save_name),
-        strategy='ddp_find_unused_parameters_true'
+        # strategy='ddp_find_unused_parameters_true',
+        # devices=[1],
         )
     
 ### --------------- Main -----------------------------------------------------------------
 
-def main(SSL_technique_prefix):
-    
-    # numero de imagens: aprox 2780
-    
-    EPOCAS = 300
-    BATCH_SIZE = 32
-    INPUT_SIZE = 256
-    
-    save_name = f'V1_E{EPOCAS}_B{BATCH_SIZE}_S{INPUT_SIZE}_parihaka'
-    # save_name = 'teste'
-
-    print(f"save name:{save_name}")
+def pretrain_func(epocas:int = 300,
+                 batch_size:int = 32,
+                 input_size:int = 256,
+                 repetition:str = 'V1',
+                 save_name:str = 'byol',
+                 data:str = 'pretext'
+                 ):
+        
     # Build the pretext model, the pretext datamodule, and the trainer
-    pretext_model = build_pretext_model()
-    pretext_datamodule = build_pretext_datamodule(BATCH_SIZE, INPUT_SIZE)
-    lightning_trainer = build_lightning_trainer(save_name, EPOCAS)
+    pretext_datamodule, num_of_files = build_pretext_datamodule(batch_size, input_size, data)
+    
+    schedule = int((num_of_files // batch_size) * epocas) 
+    # Used to determine the cossine schedule in the pretext model
+    # Numero de batches por epoca: num_of_files // batch_size pela quantidade de épocas
+    
+    pretext_model = build_pretext_model(schedule=schedule)
+    lightning_trainer = build_lightning_trainer(save_name, epocas)
 
     # Fit the pretext model using the pretext_datamodule
     lightning_trainer.fit(pretext_model, pretext_datamodule)
 
     # Save the backbone weights
-    output_filename = f"../saves/backbones/{SSL_technique_prefix}_{save_name}.pth"
+    output_filename = f"../saves/backbones/{repetition}/{save_name}.pth"
     pretext_save_backbone_weights(pretext_model, output_filename)
 
-if __name__ == "__main__":
-    main('Byol')
+
+
+
+# if __name__ == "__main__":
+#     pretrain_func('Byol')
