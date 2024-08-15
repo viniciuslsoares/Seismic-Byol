@@ -26,7 +26,6 @@ def deactivate_requires_grad(model: nn.Module):
     for param in model.parameters():
         param.requires_grad = False
         
-
 # --- Loss ---------------------------------------------------------
 
 class NegativeCosineSimilarity(torch.nn.Module):
@@ -49,7 +48,6 @@ class NegativeCosineSimilarity(torch.nn.Module):
     def forward(self, x0: torch.Tensor, x1: torch.Tensor) -> torch.Tensor:
         return -cosine_similarity(x0, x1, self.dim, self.eps).mean()
     
-
 # --- Model Parts ---------------------------------------------------------
 
 class ProjectionHead(nn.Module):
@@ -133,10 +131,13 @@ class BYOLModel(L.LightningModule):
     def __init__(self, 
                     backbone=None,
                     learning_rate: float = 0.025,
+                    schedule: int = 90000
                     ):
+        
         # Learning rate do artigo: LR = 0,2 * BatchSize/256
         # Para um BatchSize de 32, LR = 0,2 * 32/256 = 0,025
         # Para um BAtchSize de 128, LR = 0,2 * 128/256 = 0,1
+        
         super().__init__()
         if backbone:
             self.backbone = backbone
@@ -154,6 +155,7 @@ class BYOLModel(L.LightningModule):
         deactivate_requires_grad(self.projection_head_momentum)
 
         self.criterion = NegativeCosineSimilarity()
+        self.schedule_length = schedule
 
     def forward(self, x):
         y = self.backbone(x)
@@ -172,9 +174,7 @@ class BYOLModel(L.LightningModule):
         return z
 
     def training_step(self, batch, batch_idx):
-        # print(len(batch[0]))
-        momentum = cosine_schedule(self.current_epoch, 10500, 0.996, 1)
-        # if self.current_epoch == 1: print(momentum)
+        momentum = cosine_schedule(self.current_epoch, self.schedule_length, 0.996, 1)
         update_momentum(self.backbone, self.backbone_momentum, m=momentum)
         update_momentum(self.projection_head, self.projection_head_momentum, m=momentum)
         (x0, x1) = batch
@@ -197,4 +197,3 @@ class BYOLModel(L.LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.SGD(self.parameters(), lr=self.learning_rate)
-        # return LARS(torch.optim.SGD(self.parameters(), lr=self.learning_rate), eps=1e-8)
