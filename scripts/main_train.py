@@ -19,7 +19,7 @@ def main():
 
     report_path = 'reports/'
 
-    EPOCAS = 10
+    EPOCAS = 50
     BATCH_SIZE = 8
     FREEZE = False
     REPETITIONS = 'V1'                          # qual repetição do experimento    
@@ -55,6 +55,8 @@ def main():
     
     for pretrain in list_of_pretrains:
         for data in list_of_datas:
+            with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
+                f.write(f'------------------ Pre on {pretrain} and train on {data} ------------------\n')
             for cap in list_of_caps:
                 
                 print(30*'*-')
@@ -89,7 +91,6 @@ def main():
                     save_name = f'{REPETITIONS}_sup_{data}_cap_{cap*100:.0f}%'
                     
                 with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
-                        f.write(f'------------------ Pre on {pretrain} and train on {data} ------------------\n')
                         f.write(f'Running with data {data} and model pretrained in {pretrain} with cap {cap*100:.0f}%. ')
                         f.write(f'Import name: {import_name}\n')
                         f.write(f'Save name: {save_name}\n')
