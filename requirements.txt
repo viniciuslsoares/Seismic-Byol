@@ -10,3 +10,4 @@ pytorch_lightning
 lightly
 pytorch_metric_learning
 plotly
+kaleido
