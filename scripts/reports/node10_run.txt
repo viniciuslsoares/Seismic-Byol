@@ -1,0 +1,11 @@
+Report of the training
+---------------------------------------
+Datas being used: ['f3']
+Pretrains models: ['f3', 'parihaka', 'COCO', 'IMAGENET', 'both', 'sup']
+Caps: [0.01, 0.1, 0.5, 1.0]
+Node: node10
+---------------------------------------
+------------------ Pre on f3 and train on f3 ------------------
+Running with data f3 and model pretrained in f3 with cap 1%. Import name: V2_E300_B32_S256_f3
+Save name: V2_pre_f3_train_f3_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V2

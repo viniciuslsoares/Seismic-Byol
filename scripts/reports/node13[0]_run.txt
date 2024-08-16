@@ -1,0 +1,82 @@
+Report of the training
+---------------------------------------
+Datas being used: ['parihaka']
+Pretrains models: ['f3', 'parihaka', 'both']
+Caps: [0.01, 0.1, 0.5, 1.0]
+Node: node13[0]
+---------------------------------------
+------------------ Pre on f3 and train on parihaka ------------------
+Running with data parihaka and model pretrained in f3 with cap 1%. Import name: V1_E300_B32_S256_f3
+Save name: V1_pre_f3_train_parihaka_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in f3 with cap 10%. Import name: V1_E300_B32_S256_f3
+Save name: V1_pre_f3_train_parihaka_cap_10%
+Mode: byol; Cap: 10%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in f3 with cap 50%. Import name: V1_E300_B32_S256_f3
+Save name: V1_pre_f3_train_parihaka_cap_50%
+Mode: byol; Cap: 50%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in f3 with cap 100%. Import name: V1_E300_B32_S256_f3
+Save name: V1_pre_f3_train_parihaka_cap_100%
+Mode: byol; Cap: 100%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on parihaka and train on parihaka ------------------
+Running with data parihaka and model pretrained in parihaka with cap 1%. Import name: V1_E300_B32_S256_parihaka
+Save name: V1_pre_parihaka_train_parihaka_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in parihaka with cap 10%. Import name: V1_E300_B32_S256_parihaka
+Save name: V1_pre_parihaka_train_parihaka_cap_10%
+Mode: byol; Cap: 10%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in parihaka with cap 50%. Import name: V1_E300_B32_S256_parihaka
+Save name: V1_pre_parihaka_train_parihaka_cap_50%
+Mode: byol; Cap: 50%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in parihaka with cap 100%. Import name: V1_E300_B32_S256_parihaka
+Save name: V1_pre_parihaka_train_parihaka_cap_100%
+Mode: byol; Cap: 100%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on parihaka ------------------
+Running with data parihaka and model pretrained in both with cap 1%. Import name: V1_E300_B32_S256_both
+Save name: V1_pre_both_train_parihaka_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in both with cap 10%. Import name: V1_E300_B32_S256_both
+Save name: V1_pre_both_train_parihaka_cap_10%
+Mode: byol; Cap: 10%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in both with cap 50%. Import name: V1_E300_B32_S256_both
+Save name: V1_pre_both_train_parihaka_cap_50%
+Mode: byol; Cap: 50%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+Running with data parihaka and model pretrained in both with cap 100%. Import name: V1_E300_B32_S256_both
+Save name: V1_pre_both_train_parihaka_cap_100%
+Mode: byol; Cap: 100%; Repetitions: V1
+---------------------------------------
+Treinamento finalizado
+---------------------------------------

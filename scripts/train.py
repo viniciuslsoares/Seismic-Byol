@@ -55,7 +55,7 @@ def build_downstream_datamodule(batch_size, cap, data) -> L.LightningDataModule:
     print("Number of files in the pretext dataset: ", num_of_files)
     path = f'../data/{data}/images/'
 
-    if data == 'parihaka':
+    if data == 'seam_ai':
         print(f'******* Path: {path} *******')
         print("Parihaka datas being used")
         return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
@@ -114,7 +114,7 @@ def build_lightning_trainer(save_name:str, supervised:bool, epocas, reps) -> L.T
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         callbacks=[checkpoint_callback],
         # strategy='ddp_find_unused_parameters_true',
-        devices=[1]
+        # devices=[1]
         )
     
 ### --------------- Main -----------------------------------------------------------------
