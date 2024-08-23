@@ -49,7 +49,7 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
 
 # This function must instantiate and configure the datamodule for the downstream task.
 
-def build_downstream_datamodule(batch_size, cap, data) -> L.LightningDataModule:
+def build_downstream_datamodule(batch_size, cap, data, seed) -> L.LightningDataModule:
     
     num_of_files = num_files(f"../data/{data}/images/train/")
     print("Number of files in the pretext dataset: ", num_of_files)
@@ -58,12 +58,12 @@ def build_downstream_datamodule(batch_size, cap, data) -> L.LightningDataModule:
     if data == 'seam_ai':
         print(f'******* Path: {path} *******')
         print("Parihaka datas being used")
-        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
+        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed)
 
     elif data == 'f3':
         print(f'******* Path: {path} *******')
         print("F3 datas being used")
-        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap)
+        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed)
 
     else:
         raise ValueError(f"Unknown dataset: {data}")
@@ -114,7 +114,7 @@ def build_lightning_trainer(save_name:str, supervised:bool, epocas, reps) -> L.T
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         callbacks=[checkpoint_callback],
         # strategy='ddp_find_unused_parameters_true',
-        # devices=[1]
+        devices=[1]
         )
     
 ### --------------- Main -----------------------------------------------------------------
@@ -129,6 +129,7 @@ def train_func(epocas:int,
                downstream_data:str = 'f3',
                mode:str = 'byol',
                repetition:str = 'Vx',
+               seed:int = 42
                ):
 
     # Load the pretrained backbone
@@ -137,7 +138,7 @@ def train_func(epocas:int,
 
     # Build the downstream model, the downstream datamodule, and the trainer
     downstream_model = build_downstream_model(backbone, freeze)
-    downstream_datamodule = build_downstream_datamodule(batch_size, cap, downstream_data)
+    downstream_datamodule = build_downstream_datamodule(batch_size, cap, downstream_data, seed=seed)
     lightning_trainer = build_lightning_trainer(save_name, supervised, epocas, reps=repetition)
 
     lightning_trainer.fit(downstream_model, downstream_datamodule)

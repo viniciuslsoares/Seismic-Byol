@@ -54,7 +54,7 @@ def build_downstream_datamodule(data) -> L.LightningDataModule:
         print("F3 datas being used")
         return F3SeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
 
-    elif data == 'parihaka':
+    elif data == 'seam_ai':
         print("Parihaka datas being used")
         return ParihakaSeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
         

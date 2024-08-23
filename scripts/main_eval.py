@@ -10,19 +10,23 @@ A ideia é usar listas e dicionários para armazenar os parâmetros de cada mode
 
 def main():
     
-    REPORT_NAME = 'teste'
+    REPORT_NAME = 'teste_V01'
 
     report_path = 'reports/'
     
+    REPETITIONS = 'V01'                          # qual repetição do experimento
         
-    list_of_datas = ['f3', 'parihaka']
-    list_of_pretrains = ['f3']
-    # list_of_pretrains = ['f3', 'parihaka', 'COCO', 'IMAGENET', 'both', 'sup']
-    # list_of_pretrains = ['f3', 'parihaka', 'both']
-    list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
+    list_of_datas = ['f3', 'seam_ai']
+    # list_of_datas = ['f3']
+    # list_of_datas = ['seam_ai']
+    
+    list_of_pretrains = ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
+    # list_of_pretrains = ['f3', 'seam_ai, 'both']
+    # list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
+    # list_of_pretrains = ['seam_ai']
+
     list_of_caps = [0.01, 0.1, 0.5, 1.0]
-
-
+    
     with open(report_path + f'{REPORT_NAME}.txt', 'w') as f:
         f.write('Report of the evaluation of the models\n')
         f.write('---------------------------------------\n')
@@ -31,7 +35,6 @@ def main():
         f.write(f'Caps: {list_of_caps}\n')
         
     
-    REPETITIONS = 'V1'                          # qual repetição do experimento
     
     
     for data in list_of_datas:
@@ -46,7 +49,7 @@ def main():
                 print(f'''Running with data {data} and model pretrained in  {pretrain} with cap {cap*100:.0f}%. Evaluating test dataset''')
                 print(30*'*-')
 
-                if pretrain == 'f3' or pretrain == 'parihaka' or pretrain == 'both':
+                if pretrain == 'f3' or pretrain == 'seam_ai' or pretrain == 'both':
                     mode = 'byol'
                     import_name = f'{REPETITIONS}_pre_{pretrain}_train_{data}_cap_{cap*100:.0f}%'
                 elif pretrain == 'COCO':
@@ -68,6 +71,7 @@ def main():
                 
                 with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
                     f.write(30*'--' + '\n')
+                    f.write(import_name + '\n')
                     f.write(f'data: {data}, pretrain: {pretrain}, cap: {cap*100:.0f}% --> IoU: {iou[2]:.3f}; F1:{f1[2]:.3f}\n')
                     f.write(f'{iou[0]:.3f} {iou[1]:.3f} {iou[2]:.3f} ...... {f1[0]:.3f} {f1[1]:.3f} {f1[2]:.3f}\n')
 
