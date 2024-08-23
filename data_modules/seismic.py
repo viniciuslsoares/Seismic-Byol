@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader, Dataset, random_split
 from functools import lru_cache
 import random
 
-
+SEED = 42
 ## ----------------- F3 -------------------
 
 class F3SeismicDataset(Dataset):
@@ -158,7 +158,8 @@ class F3SeismicDataModule(L.LightningDataModule):
                     shuffle_dataset_indices = True,
                     transform=None, 
                     target_transform=None,
-                    cap=1.0):
+                    cap=1.0,
+                    seed=42):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -168,6 +169,7 @@ class F3SeismicDataModule(L.LightningDataModule):
         self.target_transform = target_transform
         self.zip_file = root_dir + "f3.zip"
         self.cap = cap
+        self.seed = seed
         self.setup()
 
     def setup(self, stage:str = None):
@@ -211,7 +213,7 @@ class F3SeismicDataModule(L.LightningDataModule):
         self.train_indices = list(range(len(self.train_dataset)))
         self.val_indices   = list(range(len(self.val_dataset)))
         self.test_indices  = list(range(len(self.test_dataset)))
-        random.seed(42)
+        random.seed(self.seed)
         if self.shuffle_dataset_indices:
             random.shuffle(self.train_indices)
             random.shuffle(self.val_indices)
@@ -441,7 +443,8 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
                     shuffle_dataset_indices = True,
                     transform=None, 
                     target_transform=None,
-                    cap=1.0):
+                    cap=1.0,
+                    seed=42):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -451,6 +454,7 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         self.target_transform = target_transform
         # self.zip_file = root_dir + "seam_ai.zip"
         self.cap = cap
+        self.seed = seed
         self.setup()
 
     def setup(self, stage:str = None):
@@ -474,7 +478,7 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         self.train_indices = list(range(len(self.train_dataset)))
         self.val_indices   = list(range(len(self.val_dataset)))
         self.test_indices  = list(range(len(self.test_dataset)))
-        random.seed(42)
+        random.seed(self.seed)
         if self.shuffle_dataset_indices:
             random.shuffle(self.train_indices)
             random.shuffle(self.val_indices)
