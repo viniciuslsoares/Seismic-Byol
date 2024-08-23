@@ -171,6 +171,7 @@ cython_debug/
 logs/
 data/
 repro/
+reports/
 
 *.pth
 *.ckpt
