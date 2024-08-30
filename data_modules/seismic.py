@@ -159,7 +159,8 @@ class F3SeismicDataModule(L.LightningDataModule):
                     transform=None, 
                     target_transform=None,
                     cap=1.0,
-                    seed=42):
+                    seed=42,
+                    name='f3'):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -170,6 +171,7 @@ class F3SeismicDataModule(L.LightningDataModule):
         self.zip_file = root_dir + "f3.zip"
         self.cap = cap
         self.seed = seed
+        self.name = name
         self.setup()
 
     def setup(self, stage:str = None):
@@ -194,8 +196,8 @@ class F3SeismicDataModule(L.LightningDataModule):
         #         zip_ref.extractall(self.root_dir)
         #     print("F3 Dataset extracted from {self.zip_file}")
 
-        self.data_dir   = os.path.join(self.root_dir, "f3", "images")
-        self.labels_dir = os.path.join(self.root_dir, "f3", "annotations")
+        self.data_dir   = os.path.join(self.root_dir, self.name, "images")
+        self.labels_dir = os.path.join(self.root_dir, self.name, "annotations")
 
         self.train_dataset = F3SeismicDataset(
             self.data_dir + "/train", self.labels_dir + "/train", 
@@ -444,7 +446,8 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
                     transform=None, 
                     target_transform=None,
                     cap=1.0,
-                    seed=42):
+                    seed=42,
+                    name='seam_ai'):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -455,12 +458,13 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         # self.zip_file = root_dir + "seam_ai.zip"
         self.cap = cap
         self.seed = seed
+        self.name = name
         self.setup()
 
     def setup(self, stage:str = None):
 
-        self.data_dir   = os.path.join(self.root_dir, "seam_ai", "images")
-        self.labels_dir = os.path.join(self.root_dir, "seam_ai", "annotations")
+        self.data_dir   = os.path.join(self.root_dir, self.name, "images")
+        self.labels_dir = os.path.join(self.root_dir, self.name, "annotations")
 
         self.train_dataset = ParihakaSeismicDataset(
             self.data_dir + "/train", self.labels_dir + "/train", 
