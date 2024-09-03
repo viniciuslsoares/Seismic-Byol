@@ -119,11 +119,11 @@ def eval_func(import_name:str,
 
 
     # Compute and report the mIoU metric for each subset
-    train_iou, train_f1 = report_IoU(downstream_model, train_dl, prefix="   Training dataset")
-    val_iou, val_f1 = report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
+    # train_iou, train_f1 = report_IoU(downstream_model, train_dl, prefix="   Training dataset")
+    # val_iou, val_f1 = report_IoU(downstream_model, val_dl,   prefix=" Validation dataset")
     test_iou, test_f1 = report_IoU(downstream_model, test_dl,  prefix="       Test dataset")
 
-
+    train_iou, val_iou, train_f1, val_f1 = 0, 0, 0, 0
 
     return (train_iou, val_iou, test_iou), (train_f1, val_f1, test_f1)
 

@@ -52,6 +52,7 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
 def build_downstream_datamodule(batch_size, cap, data, seed) -> L.LightningDataModule:
     
     num_of_files = num_files(f"../data/{data}/images/train/")
+    num_of_files = num_files(f"../data/f3_full/images/train/")
     print("Number of files in the pretext dataset: ", num_of_files)
     path = f'../data/{data}/images/'
 
@@ -63,7 +64,7 @@ def build_downstream_datamodule(batch_size, cap, data, seed) -> L.LightningDataM
     elif data == 'f3':
         print(f'******* Path: {path} *******')
         print("F3 datas being used")
-        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed)
+        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed, name='f3_full')
 
     else:
         raise ValueError(f"Unknown dataset: {data}")
@@ -114,7 +115,7 @@ def build_lightning_trainer(save_name:str, supervised:bool, epocas, reps) -> L.T
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         callbacks=[checkpoint_callback],
         # strategy='ddp_find_unused_parameters_true',
-        devices=[1]
+        devices=[0]
         )
     
 ### --------------- Main -----------------------------------------------------------------
@@ -144,5 +145,15 @@ def train_func(epocas:int,
     lightning_trainer.fit(downstream_model, downstream_datamodule)
 
 
-# if __name__ == "__main__":
-    # train_func()
+if __name__ == "__main__":
+    train_func(epocas=50,
+               batch_size=8,
+               cap=1,
+               import_name='V1_E300_B32_S256_f3',
+               save_name='sup_f3_novo_1',
+               supervised=True,
+               freeze=False,
+               downstream_data='f3',
+               mode='supervised',
+               repetition='V1',
+               seed=42)

@@ -27,20 +27,23 @@ def main():
     # list_of_datas = ['f3', 'seam_ai']
     # list_of_pretrains = ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
 
-    list_of_datas = ['f3']
-    # list_of_datas = ['seam_ai']    
+    # list_of_datas = ['f3']
+    list_of_datas = ['seam_ai']    
     
+    # list_of_pretrains = ['sup']
     # list_of_pretrains = ['f3', 'seam_ai', 'both']
     list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
     
-    list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
-    
+    # list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
+    # list_of_repets = ['V7', 'V8']
+    list_of_repets = ['V9', 'V10']
     list_of_caps = [0.01, 0.1, 0.5, 1.0]
     
     # list_of_seeds = [42, 420, 4200, 43, 44, 45, 46, 47, 48, 49]
+    # list_of_seeds = [46, 47]
+    list_of_seeds = [48, 49]
     
-    list_of_seed = [43, 44, 45, 46, 47, 48, 49]
-
+    
     
     with open(report_path + f'{REPORT_NAME}.txt', 'w') as f:
         f.write('Report of the training\n')
@@ -95,7 +98,7 @@ def main():
                             f.write(f'Running with data {data} and model pretrained in {pretrain} with cap {cap*100:.0f}%. ')
                             f.write(f'Import name: {import_name}\n')
                             f.write(f'Save name: {save_name}\n')
-                            f.write(f'Mode: {mode}; Cap: {cap*100:.0f}%; Repetitions: {repetition}; Seed: {list_of_seed[num]}\n')
+                            f.write(f'Mode: {mode}; Cap: {cap*100:.0f}%; Repetitions: {repetition}; Seed: {list_of_seeds[num]}\n')
                         
                     train_func(
                         epocas=EPOCAS,
@@ -108,7 +111,7 @@ def main():
                         downstream_data=data,
                         mode=mode,
                         repetition=repetition,
-                        seed=list_of_seed[num]
+                        seed=list_of_seeds[num]
                     )
                         
                     with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
