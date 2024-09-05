@@ -36,7 +36,7 @@ class F3SeismicDataset(Dataset):
         self.labels_dir = labels_dir
         self.transform = transform
         self.target_transform = target_transform
-        self.data = glob.glob(data_dir + "/*.tif")
+        self.data = glob.glob(data_dir + "/*.tif") + glob.glob(data_dir + "/*.tiff")
 
     def __len__(self):
         """
@@ -70,6 +70,7 @@ class F3SeismicDataset(Dataset):
             img = self.transform(img)
         if self.target_transform:
             label = self.target_transform(label)
+            
 
         return img, label
 
@@ -91,9 +92,15 @@ class F3SeismicDataset(Dataset):
         img = tiff.imread(self.data[idx])
         img_base_name = os.path.basename(self.data[idx]).split(".")[0]
 
+
         label = np.array(
             Image.open(os.path.join(self.labels_dir, img_base_name + ".png"))
         )
+        
+        if len(img.shape) == 2 or (len(img.shape) == 3 and img.shape[2] == 1):
+            # Se for grayscale (1 canal), aumenta para 3 canais copiando o valor existente
+            img = np.repeat(img[..., np.newaxis], 3, axis=2)
+        
         img = self._pad(img, [256, 704])
         label = self._pad(label, [256, 704])
         return img, label
@@ -159,7 +166,7 @@ class F3SeismicDataModule(L.LightningDataModule):
                     target_transform=None,
                     cap=1.0,
                     seed=42,
-                    name='f3'):
+                    ):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -167,33 +174,11 @@ class F3SeismicDataModule(L.LightningDataModule):
         self.shuffle_dataset_indices = shuffle_dataset_indices
         self.transform = transform
         self.target_transform = target_transform
-        self.zip_file = root_dir + "f3.zip"
         self.cap = cap
         self.seed = seed
-        self.name = name
         self.setup()
 
     def setup(self, stage:str = None):
-
-        # -- Not using the zip file download for now --
-        
-        # # Check if root dir exists
-        # if not os.path.exists(self.root_dir):
-        #     print(f"Creating the root directory: [{self.root_dir}]")
-        #     os.makedirs(self.root_dir)
-
-        # # Check if f3.zip file exists. If not, download it
-        # if not os.path.exists(self.zip_file):
-        #     print(f"Could not find the zip file [{self.zip_file}]")
-        #     print(f"Trying to download it.")
-        #     url = "https://www.ic.unicamp.br/~edson/disciplinas/mo436/2024-1s/data/f3.zip"
-        #     urllib.request.urlretrieve(url, self.zip_file)
-
-        # # Check if f3/ folder exists. If not, unzip the f3.zip file
-        # if not os.path.exists(self.root_dir + "/f3"):
-        #     with zipfile.ZipFile(self.zip_file, "r") as zip_ref:
-        #         zip_ref.extractall(self.root_dir)
-        #     print("F3 Dataset extracted from {self.zip_file}")
 
         self.data_dir   = os.path.join(self.root_dir, "images")
         self.labels_dir = os.path.join(self.root_dir, "annotations")
@@ -323,7 +308,7 @@ class ParihakaSeismicDataset(Dataset):
         self.labels_dir = labels_dir
         self.transform = transform
         self.target_transform = target_transform
-        self.data = glob.glob(data_dir + "/*.tif")
+        self.data = glob.glob(data_dir + "/*.tif") + glob.glob(data_dir + "/*.tiff")
 
     def __len__(self):
         """
@@ -446,7 +431,7 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
                     target_transform=None,
                     cap=1.0,
                     seed=42,
-                    name='seam_ai'):
+                    ):
         super().__init__()
         self.root_dir = root_dir
         self.batch_size = batch_size
@@ -454,7 +439,6 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         self.shuffle_dataset_indices = shuffle_dataset_indices
         self.transform = transform
         self.target_transform = target_transform
-        # self.zip_file = root_dir + "seam_ai.zip"
         self.cap = cap
         self.seed = seed
         self.setup()
