@@ -10,7 +10,7 @@ A ideia é usar listas e dicionários para armazenar os parâmetros de cada mode
 
 def main():
     
-    REPORT_NAME = 'eval_parihaka_13[0]'
+    REPORT_NAME = 'eval_parihaka_13[1]'
 
     report_path = 'reports/'
             
@@ -19,8 +19,8 @@ def main():
     list_of_datas = ['seam_ai']
     
     # list_of_pretrains = ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
-    list_of_pretrains = ['f3', 'seam_ai', 'both']
-    # list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
+    # list_of_pretrains = ['f3', 'seam_ai', 'both']
+    list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
     # list_of_pretrains = ['seam_ai']
 
     # teste
@@ -80,19 +80,19 @@ def main():
                     list_of_iou.append(iou[2])
                     list_of_f1.append(f1[2])
                     
-                    with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
-                        f.write(30*'--' + '\n')
-                        f.write(import_name + '\n')
-                        f.write(f'data: {data}, pretrain: {pretrain}, cap: {cap*100:.0f}% --> IoU: {iou[2]:.3f}; F1:{f1[2]:.3f}\n')
+                    # with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
+                        # f.write(30*'--' + '\n')
+                        # f.write(import_name + '\n')
+                        # f.write(f'data: {data}, pretrain: {pretrain}, cap: {cap*100:.0f}% --> IoU: {iou[2]:.3f}; F1:{f1[2]:.3f}\n')
                     
                 with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
-                    # f.write(30*'--' + '\n')
-                    # f.write(import_name + '\n')
+                    f.write(30*'--' + '\n')
+                    f.write(import_name + '\n')
                     # f.write(f'data: {data}, pretrain: {pretrain}, cap: {cap*100:.0f}% --> IoU: {iou[2]:.3f}; F1:{f1[2]:.3f}\n')
                     # f.write(f'{iou[0]:.3f} {iou[1]:.3f} {iou[2]:.3f} ...... {f1[0]:.3f} {f1[1]:.3f} {f1[2]:.3f}\n')
                     f.write(f'mean: {np.mean(list_of_iou):.2f}; std: {np.std(list_of_iou):.2f}\n')
                     f.write(f'max: {np.max(list_of_iou):.2f}; min: {np.min(list_of_iou):.2f}\n')
-                    # f.write(f'f1: {list_of_f1}\n')
+                    f.write(f'iou = {list_of_iou}\n')
 
 
 if __name__ == "__main__":

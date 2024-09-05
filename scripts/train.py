@@ -49,7 +49,7 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
 
 # This function must instantiate and configure the datamodule for the downstream task.
 
-def build_downstream_datamodule(batch_size, cap, data, seed) -> L.LightningDataModule:
+def build_downstream_datamodule(root_dir, batch_size, cap, data, seed) -> L.LightningDataModule:
     
     num_of_files = num_files(f"../data/{data}/images/train/")
     num_of_files = num_files(f"../data/f3_full/images/train/")
@@ -59,12 +59,12 @@ def build_downstream_datamodule(batch_size, cap, data, seed) -> L.LightningDataM
     if data == 'seam_ai':
         print(f'******* Path: {path} *******')
         print("Parihaka datas being used")
-        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed)
+        return ParihakaSeismicDataModule(root_dir=root_dir, batch_size=batch_size, cap=cap, seed=seed)
 
     elif data == 'f3':
         print(f'******* Path: {path} *******')
         print("F3 datas being used")
-        return F3SeismicDataModule(root_dir="../data/", batch_size=batch_size, cap=cap, seed=seed, name='f3_full')
+        return F3SeismicDataModule(root_dir=root_dir, batch_size=batch_size, cap=cap, seed=seed)
 
     else:
         raise ValueError(f"Unknown dataset: {data}")

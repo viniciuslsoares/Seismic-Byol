@@ -15,7 +15,7 @@ cap e flag do treinamento supervisionado
 
 def main():
     
-    NODE = 'node13[0]'
+    NODE = 'node10'
     REPORT_NAME = f'pretrain_{NODE}_run'
 
     report_path = 'reports/'
@@ -23,18 +23,14 @@ def main():
     EPOCAS = 300
     BATCH_SIZE = 32
     INPUT_SIZE = 256
-    # REPETITIONS = 'V3'                          # qual repetição do experimento    
     
-    list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
+    # list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
+    list_of_repets = ['V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17', 'V18', 'V19', 'V20']
+    
     # list_of_datas = ['f3', 'seam_ai', 'both']
-    list_of_datas = ['f3', 'seam_ai']
-    # list_of_datas = ['both']
-    # list_of_datas = ['seam_ai', 'both']
-    
-    # Três GPUs para rodar os experimentos
-    # 4090 -> todos os f3
-    # A6000 -> f3, parihaka e both no parihaka
-    # A6000 -> coco, imagenet e sup no parihaka
+    # list_of_datas = ['seam_ai']
+    # list_of_datas = ['f3']
+    list_of_datas = ['both']
     
     with open(report_path + f'{REPORT_NAME}.txt', 'w') as f:
         f.write('Report of the pretraining\n')

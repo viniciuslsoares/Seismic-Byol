@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader, Dataset, random_split
 from functools import lru_cache
 import random
 
-SEED = 42
 ## ----------------- F3 -------------------
 
 class F3SeismicDataset(Dataset):
@@ -196,8 +195,8 @@ class F3SeismicDataModule(L.LightningDataModule):
         #         zip_ref.extractall(self.root_dir)
         #     print("F3 Dataset extracted from {self.zip_file}")
 
-        self.data_dir   = os.path.join(self.root_dir, self.name, "images")
-        self.labels_dir = os.path.join(self.root_dir, self.name, "annotations")
+        self.data_dir   = os.path.join(self.root_dir, "images")
+        self.labels_dir = os.path.join(self.root_dir, "annotations")
 
         self.train_dataset = F3SeismicDataset(
             self.data_dir + "/train", self.labels_dir + "/train", 
@@ -458,13 +457,12 @@ class ParihakaSeismicDataModule(L.LightningDataModule):
         # self.zip_file = root_dir + "seam_ai.zip"
         self.cap = cap
         self.seed = seed
-        self.name = name
         self.setup()
 
     def setup(self, stage:str = None):
 
-        self.data_dir   = os.path.join(self.root_dir, self.name, "images")
-        self.labels_dir = os.path.join(self.root_dir, self.name, "annotations")
+        self.data_dir   = os.path.join(self.root_dir, "images")
+        self.labels_dir = os.path.join(self.root_dir, "annotations")
 
         self.train_dataset = ParihakaSeismicDataset(
             self.data_dir + "/train", self.labels_dir + "/train", 
