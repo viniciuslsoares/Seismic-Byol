@@ -13,6 +13,7 @@ import torchvision.models.segmentation as models
 
 ### - Extra Code --------------------------------------------------------------------
 from torchmetrics import JaccardIndex
+
 from torchmetrics import F1Score
 
 def evaluate_model(model, dataset_dl):
@@ -48,15 +49,17 @@ def report_IoU(model, dataset_dl, prefix=""):
 ### ---------- DataModule -----------------------------------------------------------
 
 # This function must instantiate and configure the datamodule for the downstream task.
-def build_downstream_datamodule(data) -> L.LightningDataModule:
+def build_downstream_datamodule(data, root_dir) -> L.LightningDataModule:
+    
+    print(f'Root dir: {root_dir}')
     
     if data == 'f3':
         print("F3 datas being used")
-        return F3SeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+        return F3SeismicDataModule(root_dir=root_dir, batch_size=8, cap=1)
 
     elif data == 'seam_ai':
         print("Parihaka datas being used")
-        return ParihakaSeismicDataModule(root_dir="../data/", batch_size=8, cap=1)
+        return ParihakaSeismicDataModule(root_dir=root_dir, batch_size=8, cap=1)
         
     else:
         raise ValueError(f"Unknown dataset: {data}")
@@ -70,7 +73,7 @@ def load_downstream_model(checkpoint_filename, mode:str = 'byol') -> L.Lightning
     
     backbone = models.deeplabv3_resnet50().backbone
 
-    if mode == 'byol' or mode == 'supervised':
+    if mode == 'byol' or mode == 'supervised' or mode == 'seg':
         print('***** Backbone carregado *****')    
     
     elif mode == 'coco':
@@ -91,7 +94,8 @@ def load_downstream_model(checkpoint_filename, mode:str = 'byol') -> L.Lightning
                                                                 head=pred_head,
                                                                 loss_fn=torch.nn.CrossEntropyLoss(),
                                                                 learning_rate=0.001,
-                                                                freeze_backbone=False)
+                                                                freeze_backbone=False,
+                                                                map_location='cuda')
     
     return downstream_model
 
@@ -102,16 +106,18 @@ def eval_func(import_name:str,
               mode:str = 'byol',
               dataset:str = 'f3',
               repetition:str = 'Vx',
+              root_dir: str = '../data/f3/',
               ): 
 
 
     # import_name = 'pretreino_COCO_seam_ai_1s%'
     
     # Load the pretrained model
+    # downstream_model = load_downstream_model(f'../saves/models/{repetition}/{import_name}.ckpt', mode=mode)
     downstream_model = load_downstream_model(f'../saves/models/{repetition}/{import_name}.ckpt', mode=mode)
 
     # Retrieve the train, validation and test sets.
-    downstream_datamodule = build_downstream_datamodule(data=dataset)
+    downstream_datamodule = build_downstream_datamodule(data=dataset, root_dir=root_dir)
     train_dl = downstream_datamodule.train_dataloader()
     val_dl   = downstream_datamodule.val_dataloader()
     test_dl  = downstream_datamodule.test_dataloader()    

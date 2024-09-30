@@ -1,11 +1,9 @@
 Report of the training
 ---------------------------------------
-Datas being used: ['parihaka']
-Pretrains models: ['COCO', 'IMAGENET', 'sup']
-Caps: [0.01, 0.1, 0.5, 1.0]
+Datas being used: ['f3']
+Pretrains models: ['seg']
+Caps: [0.01]
 Node: node13[1]
 ---------------------------------------
------------------- Pre on COCO and train on parihaka ------------------
-Running with data parihaka and model pretrained in COCO with cap 1%. Import name: V1_E300_B32_S256_f3
-Save name: V1_pre_COCO_train_parihaka_cap_1%
-Mode: coco; Cap: 1%; Repetitions: V1
+------------------ Pre on seg and train on f3 ------------------
+Running with data f3 and model pretrained in seg with cap 1%. 

@@ -56,7 +56,9 @@ class SegmentationModel(L.LightningModule):
             super().__init__()
             self.backbone = backbone if backbone else DeepLabV3Backbone()
             self.prediction_head = head if head else DeepLabV3PredictionHead(num_classes=num_classes)
-            self.loss_fn = loss_fn if loss_fn else torch.nn.CrossEntropyLoss()
+            self.loss_fn = loss_fn if loss_fn else torch.nn.CrossEntropyLoss(
+                class_weight = [0.0456399, 0.1064931, 0.02634881, 0.1825596, 0.4259724, 0.2129862]
+            )
             self.lr = learning_rate
             
             self.IoU = JaccardIndex(num_classes=num_classes, task='multiclass')

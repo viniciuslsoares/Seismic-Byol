@@ -10,25 +10,31 @@ A ideia é usar listas e dicionários para armazenar os parâmetros de cada mode
 
 def main():
     
-    REPORT_NAME = 'eval_parihaka_13[1]'
+    REPORT_NAME = 'eval_teste'
+    
+    # REPORT_NAME = 'eval_f3_13[0]'
 
     report_path = 'reports/'
             
     # list_of_datas = ['f3', 'seam_ai']
-    # list_of_datas = ['f3']
-    list_of_datas = ['seam_ai']
+    list_of_datas = ['f3']
+    # list_of_datas = ['seam_ai']
     
     # list_of_pretrains = ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
     # list_of_pretrains = ['f3', 'seam_ai', 'both']
-    list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
+    # list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
     # list_of_pretrains = ['seam_ai']
-
+    list_of_pretrains = ['seg']
     # teste
         
-    list_of_repets = ['V01', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
+    # list_of_repets = [f'V{i}' for i in range(2, 21)] + ['V01']
+    # list_of_repets = ['V2']
+    list_of_repets = [f'V{i}' for i in range(2, 11)] + ['V01']
+
     # list_of_repets = ['V01', 'V2', 'V3']
         
     list_of_caps = [0.01, 0.1, 0.5, 1.0]
+    # list_of_caps = [0.01]
     
     with open(report_path + f'{REPORT_NAME}.txt', 'w') as f:
         f.write('Report of the evaluation of the models\n')
@@ -41,6 +47,14 @@ def main():
     
     
     for data in list_of_datas:
+        
+        if data == 'f3':
+            root_dir = '../data/f3/'
+        elif data == 'seam_ai':
+            root_dir = '../data/seam_ai/'
+        else:
+            raise ValueError(f"Unknown dataset: {data}")
+        
         for pretrain in list_of_pretrains:
             
             with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
@@ -69,12 +83,18 @@ def main():
                     elif pretrain == 'sup':
                         mode = 'supervised'
                         import_name = f'{repetition}_sup_{data}_cap_{cap*100:.0f}%'
-
+                    elif pretrain == 'seg':
+                        mode = 'seg'
+                        if data == 'f3':
+                            import_name = f'{repetition}_pre_seam_ai_train_{data}_cap_{cap*100:.0f}%'
+                        elif data == 'seam_ai':
+                            import_name = f'{repetition}_pre_f3_train_{data}_cap_{cap*100:.0f}%'
 
                     iou, f1 = eval_func(import_name=import_name,
                                 mode=mode,
                                 dataset=data,
                                 repetition=repetition,
+                                root_dir=root_dir,
                                 )
 
                     list_of_iou.append(iou[2])

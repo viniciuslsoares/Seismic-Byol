@@ -43,6 +43,19 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
         print('********** Backbone IMAGENET carregado **********')
         backbone = dlv3.DeepLabV3Backbone(num_classes=6, pretrain='imagenet')
     
+    elif mode == 'seg':
+        print('********** Backbone Segmentation **********')
+        pred_head = dlv3.DeepLabV3PredictionHead(num_classes=6)
+        downstream_model = SegmentationModel.load_from_checkpoint(pretrained_backbone_checkpoint_filename,
+                                                                num_classes=6,                                                             
+                                                                backbone=backbone,
+                                                                head=pred_head,
+                                                                loss_fn=torch.nn.CrossEntropyLoss(),
+                                                                learning_rate=0.001,
+                                                                freeze_backbone=False,
+                                                                map_location='cuda')
+        backbone = downstream_model.backbone
+
     return backbone
 
 ### ---------- DataModule -----------------------------------------------------------
@@ -50,11 +63,14 @@ def load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode:str='
 # This function must instantiate and configure the datamodule for the downstream task.
 
 def build_downstream_datamodule(root_dir, batch_size, cap, data, seed) -> L.LightningDataModule:
+# build_downstream_datamodule(root_dir=root_dir, batch_size=batch_size, cap=cap, data=downstream_data, seed=seed)
+
     
-    num_of_files = num_files(f"../data/{data}/images/train/")
-    num_of_files = num_files(f"../data/f3_full/images/train/")
-    print("Number of files in the pretext dataset: ", num_of_files)
-    path = f'../data/{data}/images/'
+    path = f'{root_dir}/images'
+    num_of_files = num_files(f'{path}/train')
+    print("Number of files in dataset: ", num_of_files)
+
+    assert data in ['seam_ai', 'f3'], f"Datamodule {data} not found. Must be one of 'seam_ai' or 'f3'"
 
     if data == 'seam_ai':
         print(f'******* Path: {path} *******')
@@ -97,7 +113,8 @@ def build_lightning_trainer(save_name:str, supervised:bool, epocas, reps) -> L.T
     
     checkpoint_callback = ModelCheckpoint(
         monitor='val_IoU',
-        dirpath=f'../saves/models/{reps}/',
+        # dirpath=f'../saves/models/{reps}/',
+        dirpath=f'../saves/models/V_0.01/',
         filename=f'{save_name}',
         save_top_k=1,
         mode='max',
@@ -115,7 +132,7 @@ def build_lightning_trainer(save_name:str, supervised:bool, epocas, reps) -> L.T
         logger=CSVLogger("logs", name="Supervised" if supervised else "Pretrained", version=save_name),
         callbacks=[checkpoint_callback],
         # strategy='ddp_find_unused_parameters_true',
-        devices=[0]
+        devices=[1]
         )
     
 ### --------------- Main -----------------------------------------------------------------
@@ -130,16 +147,21 @@ def train_func(epocas:int,
                downstream_data:str = 'f3',
                mode:str = 'byol',
                repetition:str = 'Vx',
-               seed:int = 42
+               seed:int = 42,
+               root_dir:str = '../data/f3/'
                ):
 
     # Load the pretrained backbone
-    pretrained_backbone_checkpoint_filename = f"../saves/backbones/{repetition}/{import_name}.pth"
+    if mode == 'seg':
+        pretrained_backbone_checkpoint_filename = f"../saves/models/{repetition}/{import_name}.ckpt"
+    else:
+        pretrained_backbone_checkpoint_filename = f"../saves/backbones/{repetition}/{import_name}.pth"
+    print(f'Loading pretrained backbone from {pretrained_backbone_checkpoint_filename}')
     backbone = load_pretrained_backbone(pretrained_backbone_checkpoint_filename, mode=mode)
 
     # Build the downstream model, the downstream datamodule, and the trainer
     downstream_model = build_downstream_model(backbone, freeze)
-    downstream_datamodule = build_downstream_datamodule(batch_size, cap, downstream_data, seed=seed)
+    downstream_datamodule = build_downstream_datamodule(root_dir=root_dir, batch_size=batch_size, cap=cap, data=downstream_data, seed=seed)
     lightning_trainer = build_lightning_trainer(save_name, supervised, epocas, reps=repetition)
 
     lightning_trainer.fit(downstream_model, downstream_datamodule)
@@ -148,12 +170,15 @@ def train_func(epocas:int,
 if __name__ == "__main__":
     train_func(epocas=50,
                batch_size=8,
-               cap=1,
+               cap=1.0,
                import_name='V1_E300_B32_S256_f3',
-               save_name='sup_f3_novo_1',
+               save_name='window_1',
                supervised=True,
                freeze=False,
                downstream_data='f3',
                mode='supervised',
-               repetition='V1',
-               seed=42)
+               repetition='Vx',
+               seed=42,
+               root_dir='../../shared_data/seismic_vinicius/f3_segmentation_dataset_window/'
+            #    root_dir='../data/f3/'
+               )

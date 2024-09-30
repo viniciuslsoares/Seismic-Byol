@@ -14,7 +14,7 @@ cap e flag do treinamento supervisionado
 
 def main():
     
-    NODE = 'node13[1]'
+    NODE = 'seg_node13[1]'
     REPORT_NAME = f'{NODE}_run'
 
     report_path = 'reports/'
@@ -26,22 +26,23 @@ def main():
     
     # list_of_datas = ['f3', 'seam_ai']
     # list_of_pretrains = ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
+    list_of_pretrains = ['seg']
 
-    # list_of_datas = ['f3']
-    list_of_datas = ['seam_ai']    
+    list_of_datas = ['f3']
+    # list_of_datas = ['seam_ai']    
     
     # list_of_pretrains = ['sup']
     # list_of_pretrains = ['f3', 'seam_ai', 'both']
-    list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
+    # list_of_pretrains = ['COCO', 'IMAGENET', 'sup']
     
     # list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
-    # list_of_repets = ['V7', 'V8']
-    list_of_repets = ['V9', 'V10']
+    list_of_repets = [f'V{i}' for i in range(11, 21)]
+    # + ['V01']
+    # fazendo somente os 10 primeiros
     list_of_caps = [0.01, 0.1, 0.5, 1.0]
+    # list_of_caps = [0.01]
     
-    # list_of_seeds = [42, 420, 4200, 43, 44, 45, 46, 47, 48, 49]
-    # list_of_seeds = [46, 47]
-    list_of_seeds = [48, 49]
+    list_of_seeds = list(range(40, 60))
     
     
     
@@ -59,6 +60,13 @@ def main():
         for pretrain in list_of_pretrains:
             for data in list_of_datas:
                 
+                if data == 'f3':
+                    root_dir = '../data/f3/'
+                elif data == 'seam_ai':
+                    root_dir = '../data/seam_ai/'
+                else:
+                    raise ValueError('Data not found. Must be one of "f3" or "seam_ai"')
+                
                 with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
                     f.write(f'------------------ Pre on {pretrain} and train on {data} ------------------\n')
                 for cap in list_of_caps:
@@ -73,6 +81,15 @@ def main():
                         import_name = f'{repetition}_E300_B32_S256_{pretrain}'
                         save_name = f'{repetition}_pre_{pretrain}_train_{data}_cap_{cap*100:.0f}%'
                     
+                    elif pretrain == 'seg':
+                        mode = 'seg'
+                        supervised = False
+                        if data == 'f3':
+                            import_name = f'{repetition}_sup_seam_ai_cap_100%'
+                        elif data == 'seam_ai':
+                            import_name = f'{repetition}_sup_f3_cap_100%'
+                        save_name = f'{repetition}_pre_{pretrain}_train_{data}_cap_{cap*100:.0f}%'
+                        
                     elif pretrain == 'COCO':
                         mode = 'coco'
                         supervised = False
@@ -94,6 +111,7 @@ def main():
                         import_name = f'{repetition}_E300_B32_S256_f3'
                         save_name = f'{repetition}_sup_{data}_cap_{cap*100:.0f}%'
                         
+                        
                     with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:
                             f.write(f'Running with data {data} and model pretrained in {pretrain} with cap {cap*100:.0f}%. ')
                             f.write(f'Import name: {import_name}\n')
@@ -111,7 +129,8 @@ def main():
                         downstream_data=data,
                         mode=mode,
                         repetition=repetition,
-                        seed=list_of_seeds[num]
+                        seed=list_of_seeds[num],
+                        root_dir=root_dir,
                     )
                         
                     with open(report_path + f'{REPORT_NAME}.txt', 'a') as f:

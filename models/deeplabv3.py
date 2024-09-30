@@ -23,7 +23,9 @@ class DeepLabV3Model(L.LightningModule):
         super().__init__()
         self.backbone = backbone if backbone else DeepLabV3Backbone()
         self.pred_head = pred_head if pred_head else DeepLabV3PredictionHead(num_classes=num_classes)
-        self.loss_fn = torch.nn.CrossEntropyLoss()
+        self.loss_fn = torch.nn.CrossEntropyLoss(
+            class_weight = [0.0456399, 0.1064931, 0.02634881, 0.1825596, 0.4259724, 0.2129862]
+        )
         # class_weight = [0.0456399, 0.1064931, 0.02634881, 0.1825596, 0.4259724, 0.2129862]
         self.learning_rate = learning_rate
         if freeze_backbone:

@@ -1,82 +1,847 @@
 Report of the training
 ---------------------------------------
-Datas being used: ['parihaka']
-Pretrains models: ['f3', 'parihaka', 'both']
-Caps: [0.01, 0.1, 0.5, 1.0]
+Datas being used: ['seam_ai']
+Pretrains models: ['f3', 'seam_ai', 'COCO', 'IMAGENET', 'both', 'sup']
+Caps: [0.01]
 Node: node13[0]
 ---------------------------------------
------------------- Pre on f3 and train on parihaka ------------------
-Running with data parihaka and model pretrained in f3 with cap 1%. Import name: V1_E300_B32_S256_f3
-Save name: V1_pre_f3_train_parihaka_cap_1%
-Mode: byol; Cap: 1%; Repetitions: V1
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V2_E300_B32_S256_f3
+Save name: V2_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in f3 with cap 10%. Import name: V1_E300_B32_S256_f3
-Save name: V1_pre_f3_train_parihaka_cap_10%
-Mode: byol; Cap: 10%; Repetitions: V1
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V2_E300_B32_S256_seam_ai
+Save name: V2_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in f3 with cap 50%. Import name: V1_E300_B32_S256_f3
-Save name: V1_pre_f3_train_parihaka_cap_50%
-Mode: byol; Cap: 50%; Repetitions: V1
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V2_E300_B32_S256_f3
+Save name: V2_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in f3 with cap 100%. Import name: V1_E300_B32_S256_f3
-Save name: V1_pre_f3_train_parihaka_cap_100%
-Mode: byol; Cap: 100%; Repetitions: V1
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V2_E300_B32_S256_f3
+Save name: V2_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
------------------- Pre on parihaka and train on parihaka ------------------
-Running with data parihaka and model pretrained in parihaka with cap 1%. Import name: V1_E300_B32_S256_parihaka
-Save name: V1_pre_parihaka_train_parihaka_cap_1%
-Mode: byol; Cap: 1%; Repetitions: V1
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V2_E300_B32_S256_both
+Save name: V2_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in parihaka with cap 10%. Import name: V1_E300_B32_S256_parihaka
-Save name: V1_pre_parihaka_train_parihaka_cap_10%
-Mode: byol; Cap: 10%; Repetitions: V1
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V2_E300_B32_S256_f3
+Save name: V2_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V2; Seed: 40
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in parihaka with cap 50%. Import name: V1_E300_B32_S256_parihaka
-Save name: V1_pre_parihaka_train_parihaka_cap_50%
-Mode: byol; Cap: 50%; Repetitions: V1
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V3_E300_B32_S256_f3
+Save name: V3_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V3; Seed: 41
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in parihaka with cap 100%. Import name: V1_E300_B32_S256_parihaka
-Save name: V1_pre_parihaka_train_parihaka_cap_100%
-Mode: byol; Cap: 100%; Repetitions: V1
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V3_E300_B32_S256_seam_ai
+Save name: V3_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V3; Seed: 41
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
------------------- Pre on both and train on parihaka ------------------
-Running with data parihaka and model pretrained in both with cap 1%. Import name: V1_E300_B32_S256_both
-Save name: V1_pre_both_train_parihaka_cap_1%
-Mode: byol; Cap: 1%; Repetitions: V1
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V3_E300_B32_S256_f3
+Save name: V3_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V3; Seed: 41
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in both with cap 10%. Import name: V1_E300_B32_S256_both
-Save name: V1_pre_both_train_parihaka_cap_10%
-Mode: byol; Cap: 10%; Repetitions: V1
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V3_E300_B32_S256_f3
+Save name: V3_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V3; Seed: 41
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in both with cap 50%. Import name: V1_E300_B32_S256_both
-Save name: V1_pre_both_train_parihaka_cap_50%
-Mode: byol; Cap: 50%; Repetitions: V1
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V3_E300_B32_S256_both
+Save name: V3_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V3; Seed: 41
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------
-Running with data parihaka and model pretrained in both with cap 100%. Import name: V1_E300_B32_S256_both
-Save name: V1_pre_both_train_parihaka_cap_100%
-Mode: byol; Cap: 100%; Repetitions: V1
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V3_E300_B32_S256_f3
+Save name: V3_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V3; Seed: 41
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V4_E300_B32_S256_f3
+Save name: V4_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V4_E300_B32_S256_seam_ai
+Save name: V4_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V4_E300_B32_S256_f3
+Save name: V4_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V4_E300_B32_S256_f3
+Save name: V4_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V4_E300_B32_S256_both
+Save name: V4_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V4_E300_B32_S256_f3
+Save name: V4_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V4; Seed: 42
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V5_E300_B32_S256_f3
+Save name: V5_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V5_E300_B32_S256_seam_ai
+Save name: V5_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V5_E300_B32_S256_f3
+Save name: V5_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V5_E300_B32_S256_f3
+Save name: V5_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V5_E300_B32_S256_both
+Save name: V5_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V5_E300_B32_S256_f3
+Save name: V5_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V5; Seed: 43
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V6_E300_B32_S256_f3
+Save name: V6_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V6_E300_B32_S256_seam_ai
+Save name: V6_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V6_E300_B32_S256_f3
+Save name: V6_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V6_E300_B32_S256_f3
+Save name: V6_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V6_E300_B32_S256_both
+Save name: V6_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V6_E300_B32_S256_f3
+Save name: V6_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V6; Seed: 44
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V7_E300_B32_S256_f3
+Save name: V7_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V7_E300_B32_S256_seam_ai
+Save name: V7_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V7_E300_B32_S256_f3
+Save name: V7_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V7_E300_B32_S256_f3
+Save name: V7_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V7_E300_B32_S256_both
+Save name: V7_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V7_E300_B32_S256_f3
+Save name: V7_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V7; Seed: 45
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V8_E300_B32_S256_f3
+Save name: V8_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V8_E300_B32_S256_seam_ai
+Save name: V8_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V8_E300_B32_S256_f3
+Save name: V8_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V8_E300_B32_S256_f3
+Save name: V8_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V8_E300_B32_S256_both
+Save name: V8_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V8_E300_B32_S256_f3
+Save name: V8_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V8; Seed: 46
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V9_E300_B32_S256_f3
+Save name: V9_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V9_E300_B32_S256_seam_ai
+Save name: V9_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V9_E300_B32_S256_f3
+Save name: V9_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V9_E300_B32_S256_f3
+Save name: V9_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V9_E300_B32_S256_both
+Save name: V9_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V9_E300_B32_S256_f3
+Save name: V9_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V9; Seed: 47
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V10_E300_B32_S256_f3
+Save name: V10_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V10_E300_B32_S256_seam_ai
+Save name: V10_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V10_E300_B32_S256_f3
+Save name: V10_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V10_E300_B32_S256_f3
+Save name: V10_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V10_E300_B32_S256_both
+Save name: V10_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V10_E300_B32_S256_f3
+Save name: V10_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V10; Seed: 48
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V11_E300_B32_S256_f3
+Save name: V11_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V11_E300_B32_S256_seam_ai
+Save name: V11_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V11_E300_B32_S256_f3
+Save name: V11_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V11_E300_B32_S256_f3
+Save name: V11_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V11_E300_B32_S256_both
+Save name: V11_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V11_E300_B32_S256_f3
+Save name: V11_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V11; Seed: 49
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V12_E300_B32_S256_f3
+Save name: V12_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V12_E300_B32_S256_seam_ai
+Save name: V12_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V12_E300_B32_S256_f3
+Save name: V12_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V12_E300_B32_S256_f3
+Save name: V12_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V12_E300_B32_S256_both
+Save name: V12_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V12_E300_B32_S256_f3
+Save name: V12_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V12; Seed: 50
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V13_E300_B32_S256_f3
+Save name: V13_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V13_E300_B32_S256_seam_ai
+Save name: V13_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V13_E300_B32_S256_f3
+Save name: V13_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V13_E300_B32_S256_f3
+Save name: V13_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V13_E300_B32_S256_both
+Save name: V13_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V13_E300_B32_S256_f3
+Save name: V13_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V13; Seed: 51
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V14_E300_B32_S256_f3
+Save name: V14_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V14_E300_B32_S256_seam_ai
+Save name: V14_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V14_E300_B32_S256_f3
+Save name: V14_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V14_E300_B32_S256_f3
+Save name: V14_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V14_E300_B32_S256_both
+Save name: V14_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V14_E300_B32_S256_f3
+Save name: V14_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V14; Seed: 52
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V15_E300_B32_S256_f3
+Save name: V15_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V15_E300_B32_S256_seam_ai
+Save name: V15_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V15_E300_B32_S256_f3
+Save name: V15_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V15_E300_B32_S256_f3
+Save name: V15_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V15_E300_B32_S256_both
+Save name: V15_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V15_E300_B32_S256_f3
+Save name: V15_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V15; Seed: 53
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V16_E300_B32_S256_f3
+Save name: V16_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V16_E300_B32_S256_seam_ai
+Save name: V16_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V16_E300_B32_S256_f3
+Save name: V16_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V16_E300_B32_S256_f3
+Save name: V16_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V16_E300_B32_S256_both
+Save name: V16_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V16_E300_B32_S256_f3
+Save name: V16_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V16; Seed: 54
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V17_E300_B32_S256_f3
+Save name: V17_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V17_E300_B32_S256_seam_ai
+Save name: V17_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V17_E300_B32_S256_f3
+Save name: V17_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V17_E300_B32_S256_f3
+Save name: V17_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V17_E300_B32_S256_both
+Save name: V17_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V17_E300_B32_S256_f3
+Save name: V17_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V17; Seed: 55
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V18_E300_B32_S256_f3
+Save name: V18_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V18_E300_B32_S256_seam_ai
+Save name: V18_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V18_E300_B32_S256_f3
+Save name: V18_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V18_E300_B32_S256_f3
+Save name: V18_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V18_E300_B32_S256_both
+Save name: V18_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V18_E300_B32_S256_f3
+Save name: V18_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V18; Seed: 56
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V19_E300_B32_S256_f3
+Save name: V19_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V19_E300_B32_S256_seam_ai
+Save name: V19_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V19_E300_B32_S256_f3
+Save name: V19_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V19_E300_B32_S256_f3
+Save name: V19_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V19_E300_B32_S256_both
+Save name: V19_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V19_E300_B32_S256_f3
+Save name: V19_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V19; Seed: 57
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V20_E300_B32_S256_f3
+Save name: V20_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V20_E300_B32_S256_seam_ai
+Save name: V20_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V20_E300_B32_S256_f3
+Save name: V20_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V20_E300_B32_S256_f3
+Save name: V20_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V20_E300_B32_S256_both
+Save name: V20_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V20_E300_B32_S256_f3
+Save name: V20_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V20; Seed: 58
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on f3 and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in f3 with cap 1%. Import name: V01_E300_B32_S256_f3
+Save name: V01_pre_f3_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V01; Seed: 59
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on seam_ai and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in seam_ai with cap 1%. Import name: V01_E300_B32_S256_seam_ai
+Save name: V01_pre_seam_ai_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V01; Seed: 59
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on COCO and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in COCO with cap 1%. Import name: V01_E300_B32_S256_f3
+Save name: V01_pre_COCO_train_seam_ai_cap_1%
+Mode: coco; Cap: 1%; Repetitions: V01; Seed: 59
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on IMAGENET and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in IMAGENET with cap 1%. Import name: V01_E300_B32_S256_f3
+Save name: V01_pre_IMAGENET_train_seam_ai_cap_1%
+Mode: imagenet; Cap: 1%; Repetitions: V01; Seed: 59
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on both and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in both with cap 1%. Import name: V01_E300_B32_S256_both
+Save name: V01_pre_both_train_seam_ai_cap_1%
+Mode: byol; Cap: 1%; Repetitions: V01; Seed: 59
+---------------------------------------
+Treinamento finalizado
+---------------------------------------
+------------------ Pre on sup and train on seam_ai ------------------
+Running with data seam_ai and model pretrained in sup with cap 1%. Import name: V01_E300_B32_S256_f3
+Save name: V01_sup_seam_ai_cap_1%
+Mode: supervised; Cap: 1%; Repetitions: V01; Seed: 59
 ---------------------------------------
 Treinamento finalizado
 ---------------------------------------

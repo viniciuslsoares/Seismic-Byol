@@ -15,8 +15,8 @@ cap e flag do treinamento supervisionado
 
 def main():
     
-    NODE = 'node10'
-    REPORT_NAME = f'pretrain_{NODE}_run'
+    NODE = 'node13[0]'
+    REPORT_NAME = f'pretrain_{NODE}_run'W
 
     report_path = 'reports/'
 
@@ -25,9 +25,12 @@ def main():
     INPUT_SIZE = 256
     
     # list_of_repets = ['V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10']
-    list_of_repets = ['V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17', 'V18', 'V19', 'V20']
+    # list_of_repets = ['V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17', 'V18', 'V19', 'V20']
     
-    # list_of_datas = ['f3', 'seam_ai', 'both']
+    list_of_repets = ['V11', 'V12', 'V13']
+    
+    list_of_datas = ['f3', 'seam_ai', 'both']
+    
     # list_of_datas = ['seam_ai']
     # list_of_datas = ['f3']
     list_of_datas = ['both']
