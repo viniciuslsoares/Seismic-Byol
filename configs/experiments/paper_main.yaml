@@ -60,9 +60,6 @@ matrices:
               class_path: minerva.transforms.transform.TransformPipeline
               init_args:
                 transforms:
-                  - class_path: minerva.transforms.random_transform.RandomCrop
-                    init_args:
-                      crop_size: [256, 256]
                   - class_path: minerva.transforms.random_transform.RandomFlip
                     init_args:
                       possible_axis: 1
@@ -74,6 +71,9 @@ matrices:
                   - class_path: minerva.transforms.transform.Transpose
                     init_args:
                       axes: [2, 0, 1]
+                  - class_path: minerva.transforms.random_transform.RandomCrop
+                    init_args:
+                      crop_size: [256, 256]
                   - class_path: minerva.transforms.transform.CastTo
                     init_args:
                       dtype: float32
