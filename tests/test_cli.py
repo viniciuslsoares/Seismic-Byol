@@ -1,5 +1,6 @@
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -73,6 +74,46 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(status, 2)
         self.assertIn("Unknown filter axes", stderr)
+
+    def test_plan_materializes_selected_environment(self):
+        status, stdout, stderr = self._run(
+            "plan",
+            str(PAPER_CONFIG),
+            "--environment",
+            "sdumont",
+            "--only",
+            "matrix=byol-pretrain",
+            "--only",
+            "pretrain=f3_N",
+            "--only",
+            "seed=0",
+            "--format",
+            "json",
+            "--limit",
+            "1",
+        )
+
+        self.assertEqual(status, 0)
+        manifest = json.loads(stdout)[0]
+        self.assertEqual(manifest["runtime"]["environment"]["name"], "sdumont")
+        self.assertEqual(
+            manifest["runtime"]["inputs"]["dataset"]["input_path"],
+            "/petrobr/parceirosbr/home/vinicius.soares/workspace/spfm/"
+            "datasets/tiff_data/f3_segmentation_N/images",
+        )
+        self.assertIn("Showing 1 of 1 resolved runs.", stderr)
+
+    def test_check_paths_reports_missing_directories(self):
+        status, _, stderr = self._run(
+            "validate",
+            str(PAPER_CONFIG),
+            "--environment",
+            "container",
+            "--check-paths",
+        )
+
+        self.assertEqual(status, 2)
+        self.assertIn("required dataset paths are missing", stderr)
 
 
 if __name__ == "__main__":

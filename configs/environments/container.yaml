@@ -1,0 +1,11 @@
+schema_version: 1
+
+environment:
+  name: container
+  data_root: /workspaces/shared_data
+  output_root: /workspaces/Seismic-Byol/outputs
+  datasets:
+    f3_N: seismic/f3_segmentation_N
+    seam_ai_N: seam_ai_datasets/seam_ai_N
+    both_N: seismic/both_N
+    a700: a700

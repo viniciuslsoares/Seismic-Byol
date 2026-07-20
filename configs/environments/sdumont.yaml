@@ -1,0 +1,11 @@
+schema_version: 1
+
+environment:
+  name: sdumont
+  data_root: /petrobr/parceirosbr/home/vinicius.soares/workspace/spfm/datasets
+  output_root: /petrobr/parceirosbr/home/vinicius.soares/workspace/spfm/outputs
+  datasets:
+    f3_N: tiff_data/f3_segmentation_N
+    seam_ai_N: tiff_data/seam_ai_N
+    both_N: tiff_data/both_N
+    a700: a700

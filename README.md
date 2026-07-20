@@ -88,6 +88,88 @@ O limite de exibição não limita os manifestos escritos. Cada arquivo recebe u
 `run_id` determinístico calculado a partir da combinação, parâmetros e revisão
 do Minerva.
 
+## Ambientes e localização dos dados
+
+Os três ambientes são descritos explicitamente:
+
+```text
+configs/
+├── datasets.yaml
+└── environments/
+    ├── local.yaml
+    ├── container.yaml
+    └── sdumont.yaml
+```
+
+`datasets.yaml` define os datasets lógicos, papéis suportados e layout
+obrigatório. Os perfis informam apenas raízes físicas. Isso corrige a
+ambiguidade antiga em que o mesmo path apontava para a raiz supervisionada em
+um host e para a pasta `images/` em outro.
+
+O ambiente não é mais inferido pelo hostname. Ele deve ser escolhido pela CLI:
+
+```bash
+seismic-byol plan configs/experiments/paper_main.yaml \
+  --environment container \
+  --only matrix=downstream \
+  --only pretrain=both_N \
+  --only finetune=f3_N
+```
+
+Ou por variável:
+
+```bash
+SEISMIC_ENV=sdumont \
+seismic-byol validate configs/experiments/paper_main.yaml
+```
+
+A precedência é:
+
+1. `--environment`;
+2. `SEISMIC_ENV`;
+3. erro explícito quando uma operação precisa materializar paths.
+
+Planejamento científico continua funcionando sem ambiente. Quando um ambiente
+é informado, saídas JSON/YAML e manifestos recebem um bloco `runtime` com:
+
+- raízes de dados e outputs;
+- dataset e path específicos do estágio;
+- diretório isolado da execução;
+- checkpoint esperado;
+- dependência entre fine-tuning e seu pré-treino.
+
+O `run_id` científico não inclui paths e permanece igual nos três ambientes.
+
+### Overrides
+
+Os YAMLs podem ser adaptados sem editar arquivos versionados:
+
+```bash
+export SEISMIC_DATA_ROOT=/mnt/seismic
+export SEISMIC_OUTPUT_ROOT=/scratch/experiments
+export SEISMIC_DATASET_A700_ROOT=/private/a700
+export SEISMIC_CONFIG_ROOT=/caminho/para/configs
+```
+
+Overrides por dataset seguem
+`SEISMIC_DATASET_<NOME_NORMALIZADO>_ROOT`, por exemplo
+`SEISMIC_DATASET_F3_N_ROOT`.
+
+### Validar layouts reais
+
+A validação de paths é opcional para permitir planejamento em CI e máquinas
+sem os dados:
+
+```bash
+seismic-byol validate configs/experiments/paper_main.yaml \
+  --environment container \
+  --check-paths
+```
+
+Para F3 e Parihaka são conferidos os splits `train`, `val` e `test`, imagens e
+anotações. Para pré-treino são conferidos somente `train` e `val`; para A700,
+`iline` e `xline`. ImageNet, COCO e inicialização aleatória não exigem paths.
+
 ## Formato da matriz
 
 Um arquivo pode conter várias matrizes, permitindo representar estágios
@@ -146,10 +228,10 @@ referencia seus componentes:
 - `ContrastiveTransform` e demais transforms;
 - `SimpleLightningPipeline` e `Experiment`.
 
-A próxima etapa conectará cada manifesto resolvido a esses objetos e aos
-datasets dos três ambientes. Até lá, os comandos `validate` e `plan` não
-inicializam CUDA nem importam PyTorch/Minerva, portanto podem ser usados em
-máquinas leves e em CI.
+Os manifestos já são conectados aos datasets dos três ambientes. A próxima
+etapa instanciará os objetos Minerva a partir desses manifestos. Os comandos
+`validate` e `plan` continuam sem inicializar CUDA ou importar PyTorch/Minerva,
+portanto podem ser usados em máquinas leves e em CI.
 
 ## Testes
 
