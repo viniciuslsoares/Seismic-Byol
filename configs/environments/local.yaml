@@ -1,0 +1,11 @@
+schema_version: 1
+
+environment:
+  name: local
+  data_root: /home/vinicius.soares/asml/datasets
+  output_root: /home/vinicius.soares/Seismic-Byol/outputs
+  datasets:
+    f3_N: tiff_data/f3_segmentation_N
+    seam_ai_N: tiff_data/seam_ai_N
+    both_N: tiff_data/both_N
+    a700: /parceirosbr/asml/datasets/a700

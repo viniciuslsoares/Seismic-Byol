@@ -1,0 +1,66 @@
+schema_version: 1
+
+datasets:
+  f3_N:
+    kind: seismic_segmentation
+    roles: [pretrain, finetune]
+    pretrain_path: images
+    padding: [256, 704]
+    required:
+      pretrain:
+        - images/train
+        - images/val
+      finetune:
+        - images/train
+        - images/val
+        - images/test
+        - annotations/train
+        - annotations/val
+        - annotations/test
+
+  seam_ai_N:
+    kind: seismic_segmentation
+    roles: [pretrain, finetune]
+    pretrain_path: images
+    padding: [1008, 592]
+    required:
+      pretrain:
+        - images/train
+        - images/val
+      finetune:
+        - images/train
+        - images/val
+        - images/test
+        - annotations/train
+        - annotations/val
+        - annotations/test
+
+  both_N:
+    kind: tiff_pretrain
+    roles: [pretrain]
+    pretrain_path: images
+    required:
+      pretrain:
+        - images/train
+        - images/val
+
+  a700:
+    kind: a700
+    roles: [pretrain]
+    pretrain_path: .
+    required:
+      pretrain:
+        - iline
+        - xline
+
+  imagenet:
+    kind: builtin_backbone
+    roles: [backbone]
+
+  coco:
+    kind: builtin_backbone
+    roles: [backbone]
+
+  scratch:
+    kind: random_initialization
+    roles: [backbone]
