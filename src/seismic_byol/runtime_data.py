@@ -75,6 +75,29 @@ class A700Dataset(Dataset):
         return self.transform(normalized)
 
 
+class CompatiblePadding(Padding):
+    """Minerva Padding compatibility for non-constant NumPy modes."""
+
+    def __call__(self, value: np.ndarray) -> np.ndarray:
+        if self.padding_mode == "constant":
+            return super().__call__(value)
+        height, width = value.shape[:2]
+        pad_height = max(0, self.target_h_size - height)
+        pad_width = max(0, self.target_w_size - width)
+        if value.ndim == 2:
+            padded = np.pad(
+                value,
+                ((0, pad_height), (0, pad_width)),
+                mode=self.padding_mode,
+            )
+            return np.expand_dims(padded, axis=2)
+        return np.pad(
+            value,
+            ((0, pad_height), (0, pad_width), (0, 0)),
+            mode=self.padding_mode,
+        )
+
+
 def _a700_transform(input_size: tuple[int, int]) -> ContrastiveTransform:
     return ContrastiveTransform(
         TransformPipeline(
@@ -109,14 +132,21 @@ def build_pretrain_data_module(
         train_dataset = A700Dataset(dataset.input_path, "train", a700_transform)
         val_dataset = A700Dataset(dataset.input_path, "val", a700_transform)
     else:
-        reader = TiffReader(path=dataset.input_path)
-        if len(reader) == 0:
-            raise ConfigError(f"No TIFF files found under {dataset.input_path}.")
-        train_dataset = SimpleDataset(
-            readers=reader,
-            transforms=transform,
-            return_single=True,
-        )
+        split_datasets: list[Dataset] = []
+        for partition in ("train", "val"):
+            reader = TiffReader(path=dataset.input_path / partition)
+            if len(reader) == 0:
+                raise ConfigError(
+                    f"No TIFF files found under {dataset.input_path / partition}."
+                )
+            split_datasets.append(
+                SimpleDataset(
+                    readers=reader,
+                    transforms=transform,
+                    return_single=True,
+                )
+            )
+        train_dataset = ConcatDataset(split_datasets)
         val_dataset = None
 
     return MinervaDataModule(
@@ -212,14 +242,14 @@ def build_finetune_data_module(
     height, width = definition.padding
     image_transform = TransformPipeline(
         [
-            Padding(height, width),
+            CompatiblePadding(height, width),
             Transpose((2, 0, 1)),
             CastTo(dtype="float32"),
         ]
     )
     mask_transform = TransformPipeline(
         [
-            Padding(height, width),
+            CompatiblePadding(height, width),
             Transpose((2, 0, 1)),
             CastTo(dtype="int64"),
         ]

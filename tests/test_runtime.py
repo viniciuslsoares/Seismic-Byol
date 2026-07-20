@@ -50,7 +50,11 @@ class RuntimeTests(unittest.TestCase):
 
     def _write_tiff(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
-        tifffile.imwrite(path, np.zeros((16, 16, 3), dtype=np.float32))
+        tifffile.imwrite(
+            path,
+            np.zeros((16, 16, 3), dtype=np.float32),
+            photometric="rgb",
+        )
 
     def _write_mask(self, path: Path):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -60,6 +64,7 @@ class RuntimeTests(unittest.TestCase):
         dataset_root = self.root / "f3_N"
         self._write_tiff(dataset_root / "images/train/il_0.tiff")
         self._write_tiff(dataset_root / "images/val/il_1.tiff")
+        self._write_tiff(dataset_root / "images/test/must_not_be_used.tiff")
         environment = self._environment(f3_N=dataset_root)
         materialized = materialize_experiment(
             self.config,
@@ -83,6 +88,9 @@ class RuntimeTests(unittest.TestCase):
         self.assertIsInstance(runtime.model, BYOL)
         self.assertEqual(runtime.task, "fit")
         self.assertEqual(len(runtime.data_module.train_dataset), 2)
+        first_view, second_view = runtime.data_module.train_dataset[0]
+        self.assertEqual(first_view.shape, (3, 256, 256))
+        self.assertEqual(second_view.shape, (3, 256, 256))
         self.assertEqual(
             runtime.pipeline.log_dir,
             materialized.outputs["run_root"],
@@ -127,6 +135,9 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(len(runtime.data_module.train_dataset), 2)
         self.assertEqual(len(runtime.data_module.val_dataset), 1)
         self.assertEqual(len(runtime.data_module.test_dataset), 1)
+        image, mask = runtime.data_module.train_dataset[0]
+        self.assertEqual(image.shape, (3, 256, 704))
+        self.assertEqual(mask.shape, (1, 256, 704))
         self.assertEqual(runtime.pipeline.log_dir, materialized.outputs["run_root"])
         self.assertTrue(runtime.pipeline._trainer_parameters()["deterministic"])
         self.assertFalse(runtime.pipeline._trainer_parameters()["benchmark"])

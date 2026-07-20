@@ -276,6 +276,16 @@ O adaptador A700 mantém apenas a regra específica do projeto — leitura NPY,
 split determinístico 90/10 e Z-score por amostra — e entrega os datasets a um
 `MinervaDataModule`.
 
+Duas correções de compatibilidade ficam explícitas em adaptadores pequenos:
+
+- `StepScheduledBYOL` mantém todo o BYOL do Minerva, mas aplica o schedule de
+  momentum por `global_step`, como documentado, em vez de `current_epoch`;
+- `CompatiblePadding` preserva o padding do Minerva e evita o argumento NumPy
+  inválido usado pela versão fixada em modos não constantes.
+
+O pré-treino TIFF monta explicitamente apenas `images/train` e `images/val`;
+arquivos de `images/test` nunca entram no reader BYOL.
+
 ### Executar uma combinação
 
 Depois de inspecionar o runtime:

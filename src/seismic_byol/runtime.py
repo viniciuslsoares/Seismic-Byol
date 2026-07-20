@@ -134,6 +134,35 @@ class ReproducibleExperiment(Experiment):
         return parameters
 
 
+class StepScheduledBYOL(BYOL):
+    """Minerva BYOL with its documented momentum schedule applied per step."""
+
+    def training_step(self, batch, batch_idx):
+        momentum = self.cosine_schedule(
+            self.global_step,
+            self.schedule_length,
+            0.996,
+            1.0,
+        )
+        self.update_momentum(self.backbone, self.backbone_momentum, m=momentum)
+        self.update_momentum(
+            self.projection_head,
+            self.projection_head_momentum,
+            m=momentum,
+        )
+        loss = self._loss_func(batch)
+        self.log(
+            "train_loss",
+            loss,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+            sync_dist=True,
+        )
+        return loss
+
+
 class SeismicModelInstantiator(ModelInstantiator):
     """Create Minerva DeepLabV3 models for every configured backbone source."""
 

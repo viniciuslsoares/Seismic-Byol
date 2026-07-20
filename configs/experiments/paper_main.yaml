@@ -32,7 +32,7 @@ matrices:
         pipeline:
           class_path: minerva.pipelines.lightning_pipeline.SimpleLightningPipeline
         model:
-          class_path: minerva.models.ssl.byol.BYOL
+          class_path: seismic_byol.runtime.StepScheduledBYOL
           init_args:
             backbone:
               class_path: minerva.models.nets.image.deeplabv3.DeepLabV3Backbone
