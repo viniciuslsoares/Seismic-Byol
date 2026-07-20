@@ -19,6 +19,7 @@ DATA_ROOT_VARIABLE = "SEISMIC_DATA_ROOT"
 OUTPUT_ROOT_VARIABLE = "SEISMIC_OUTPUT_ROOT"
 CONFIG_ROOT_VARIABLE = "SEISMIC_CONFIG_ROOT"
 _NAME_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
+_DATASET_NAME_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 
 
 @dataclass(frozen=True)
@@ -114,6 +115,14 @@ def _require_name(value: Any, location: str) -> str:
     return value
 
 
+def _require_dataset_name(value: Any, location: str) -> str:
+    if not isinstance(value, str) or not _DATASET_NAME_PATTERN.fullmatch(value):
+        raise ConfigError(
+            f"{location} must contain letters, numbers, '-' or '_'."
+        )
+    return value
+
+
 def _require_string_list(value: Any, location: str) -> tuple[str, ...]:
     if not isinstance(value, list) or not value:
         raise ConfigError(f"{location} must be a non-empty list.")
@@ -135,7 +144,7 @@ def load_dataset_registry(config_root: str | Path) -> DatasetRegistry:
 
     datasets: dict[str, DatasetDefinition] = {}
     for raw_name, raw_definition in raw_datasets.items():
-        name = _require_name(raw_name, "dataset name")
+        name = _require_dataset_name(raw_name, "dataset name")
         if not isinstance(raw_definition, Mapping):
             raise ConfigError(f"datasets.{name} must be a mapping.")
         kind = _require_name(raw_definition.get("kind"), f"datasets.{name}.kind")
@@ -234,7 +243,9 @@ def load_environment(
         raise ConfigError("environment.datasets must be a mapping.")
     dataset_paths: dict[str, Path] = {}
     for raw_dataset_name, raw_path in raw_dataset_paths.items():
-        dataset_name = _require_name(raw_dataset_name, "environment dataset name")
+        dataset_name = _require_dataset_name(
+            raw_dataset_name, "environment dataset name"
+        )
         if not isinstance(raw_path, str) or not raw_path:
             raise ConfigError(
                 f"environment.datasets.{dataset_name} must be a non-empty string."
