@@ -1,0 +1,154 @@
+schema_version: 1
+
+experiment:
+  name: paper-main
+  description: >-
+    Reproducibility matrix derived from the final research report. Values that
+    differed in historical launchers follow the report and remain explicit here.
+  metadata:
+    methodology_source: byol_paper_3eff.pdf
+    minerva:
+      repository: https://github.com/discovery-unicamp/Minerva
+      revision: f23918a58ea25ee4c016860a348d592e4ac5a04d
+      version: 0.3.10-beta
+
+matrices:
+  - name: byol-pretrain
+    stage: pretrain
+    axes:
+      pretrain:
+        - f3_N
+        - seam_ai_N
+        - both_N
+        - a700
+      seed: [0, 1, 2, 3, 4]
+    parameters:
+      task: fit
+      input_size: [256, 256]
+      batch_size: 32
+      max_steps: 85000
+      checkpoints: 10
+      minerva:
+        pipeline:
+          class_path: minerva.pipelines.lightning_pipeline.SimpleLightningPipeline
+        model:
+          class_path: minerva.models.ssl.byol.BYOL
+          init_args:
+            backbone:
+              class_path: minerva.models.nets.image.deeplabv3.DeepLabV3Backbone
+              init_args:
+                num_classes: 6
+            learning_rate: 1.0e-5
+            schedule: 85000
+            optimizer_kwargs:
+              weight_decay: 1.0e-5
+        trainer:
+          class_path: lightning.Trainer
+          init_args:
+            accelerator: gpu
+            devices: 4
+            max_steps: 85000
+            strategy: auto
+        data:
+          reader_class: minerva.data.readers.TiffReader
+          dataset_class: minerva.data.datasets.SimpleDataset
+          data_module_class: minerva.data.data_modules.MinervaDataModule
+        transforms:
+          class_path: minerva.transforms.transform.ContrastiveTransform
+          init_args:
+            transform:
+              class_path: minerva.transforms.transform.TransformPipeline
+              init_args:
+                transforms:
+                  - class_path: minerva.transforms.random_transform.RandomCrop
+                    init_args:
+                      crop_size: [256, 256]
+                  - class_path: minerva.transforms.random_transform.RandomFlip
+                    init_args:
+                      possible_axis: 1
+                      prob: 0.5
+                  - class_path: minerva.transforms.random_transform.RandomRotation
+                    init_args:
+                      degrees: 5
+                      prob: 1.0
+                  - class_path: minerva.transforms.transform.Transpose
+                    init_args:
+                      axes: [2, 0, 1]
+                  - class_path: minerva.transforms.transform.CastTo
+                    init_args:
+                      dtype: float32
+
+  - name: downstream
+    stage: finetune
+    axes:
+      pretrain:
+        - f3_N
+        - seam_ai_N
+        - both_N
+        - a700
+        - imagenet
+        - coco
+        - scratch
+      finetune:
+        - f3_N
+        - seam_ai_N
+      head:
+        - linear
+        - aspp
+      backbone_mode:
+        - frozen
+        - unfrozen
+      cap:
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 16
+        - 32
+        - 64
+        - 128
+        - 256
+        - 512
+        - full
+      seed: [0, 1, 2, 3, 4]
+    exclude:
+      - pretrain: scratch
+        backbone_mode: frozen
+    parameters:
+      task: fit-evaluate
+      batch_size: 8
+      learning_rate: 1.0e-5
+      full_data_epochs: 50
+      low_data_policy: constant_steps
+      num_classes: 6
+      minerva:
+        pipeline:
+          class_path: minerva.pipelines.experiment.Experiment
+          init_args:
+            root_log_dir: outputs
+            accelerator: gpu
+            devices: 1
+            max_epochs: 50
+            save_predictions: false
+            save_results: true
+            add_last_checkpoint: true
+            checkpoint_metrics:
+              - monitor: val_loss
+                mode: min
+                filename: best
+        model:
+          class_path: minerva.models.nets.image.deeplabv3.DeepLabV3
+          init_args:
+            num_classes: 6
+            learning_rate: 1.0e-5
+            optimizer_kwargs:
+              weight_decay: 0.0
+        data:
+          image_reader_class: minerva.data.readers.TiffReader
+          annotation_reader_class: minerva.data.readers.PNGReader
+          dataset_class: minerva.data.datasets.SimpleDataset
+          data_module_class: minerva.data.data_modules.MinervaDataModule
+          subset_class: minerva.data.datasets.binary_tree_subset.BinaryTreeSubset

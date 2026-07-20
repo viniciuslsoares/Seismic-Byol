@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seismic-byol"
+version = "0.1.0"
+description = "Reproducible BYOL experiment orchestration for seismic segmentation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "PyYAML>=6.0.2,<7",
+]
+
+[project.optional-dependencies]
+runtime = [
+    "minerva @ git+https://github.com/discovery-unicamp/Minerva.git@f23918a58ea25ee4c016860a348d592e4ac5a04d",
+]
+
+[project.scripts]
+seismic-byol = "seismic_byol.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+seismic_byol = ["py.typed"]
