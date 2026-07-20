@@ -42,7 +42,7 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(status, 0)
         self.assertIn("both_N", stdout)
-        self.assertIn("Showing 3 of 80 resolved runs.", stderr)
+        self.assertIn("Showing 3 of 40 resolved runs.", stderr)
 
     def test_plan_writes_all_filtered_manifests_despite_display_limit(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
