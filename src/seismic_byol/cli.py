@@ -243,7 +243,10 @@ def _path_issue_message(materialized_runs: Sequence[MaterializedRun]) -> str | N
     )
     remainder = len(unique) - len(examples)
     suffix = f"; and {remainder} more" if remainder else ""
-    return f"{len(unique)} required runtime paths are missing: {details}{suffix}"
+    return (
+        f"{len(unique)} required dataset paths are missing "
+        f"(including checkpoint dependencies): {details}{suffix}"
+    )
 
 
 def _validate_command(args: argparse.Namespace) -> int:
