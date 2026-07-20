@@ -147,6 +147,52 @@ class MaterializationTests(unittest.TestCase):
             self.assertTrue(run.paths_checked)
             self.assertEqual(len(run.issues), 2)
 
+    def test_checked_finetune_requires_pretrain_checkpoint(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            dataset_root = root / "f3_N"
+            for relative in (
+                "images/train",
+                "images/val",
+                "images/test",
+                "annotations/train",
+                "annotations/val",
+                "annotations/test",
+            ):
+                (dataset_root / relative).mkdir(parents=True)
+            environment = EnvironmentProfile(
+                name="test",
+                data_root=root,
+                output_root=root / "outputs",
+                dataset_paths={"f3_N": dataset_root},
+                source=root / "test.yaml",
+            )
+
+            run = materialize_experiment(
+                self.config,
+                environment,
+                self.registry,
+                only={
+                    "matrix": "downstream",
+                    "pretrain": "f3_N",
+                    "finetune": "f3_N",
+                    "head": "linear",
+                    "backbone_mode": "frozen",
+                    "cap": 2,
+                    "seed": 0,
+                },
+                check_paths=True,
+            )[0]
+
+            checkpoint_issues = [
+                issue for issue in run.issues if issue.role == "checkpoint"
+            ]
+            self.assertEqual(len(checkpoint_issues), 1)
+            self.assertEqual(
+                checkpoint_issues[0].path,
+                run.inputs["backbone"]["checkpoint"],
+            )
+
     def test_materialized_manifest_contains_environment_and_dependency(self):
         runs = materialize_experiment(
             self.config,

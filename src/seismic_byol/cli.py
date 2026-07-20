@@ -158,6 +158,48 @@ def _build_parser() -> argparse.ArgumentParser:
         help="write all filtered runs as individual resolved YAML files",
     )
     _add_environment_arguments(plan)
+
+    for command, help_text in (
+        ("build", "instantiate one selected run as real Minerva objects"),
+        ("run", "execute one selected run through its Minerva pipeline"),
+    ):
+        runtime_parser = subparsers.add_parser(command, help=help_text)
+        runtime_parser.add_argument("config", type=Path)
+        runtime_parser.add_argument(
+            "--environment",
+            required=False,
+            help=f"execution profile; overrides {ENVIRONMENT_VARIABLE}",
+        )
+        runtime_parser.add_argument(
+            "--only",
+            action="append",
+            default=[],
+            type=_parse_filter,
+            metavar="KEY=VALUE",
+            help="select exactly one run; may be repeated",
+        )
+        runtime_parser.add_argument(
+            "--accelerator",
+            choices=("auto", "cpu", "gpu"),
+            help="override the configured Lightning accelerator",
+        )
+        runtime_parser.add_argument(
+            "--num-workers",
+            type=int,
+            help="override data-loader workers",
+        )
+        if command == "build":
+            runtime_parser.add_argument(
+                "--format",
+                choices=("json", "yaml"),
+                default="yaml",
+            )
+        else:
+            runtime_parser.add_argument(
+                "--debug",
+                action="store_true",
+                help="use Minerva's reduced debug execution when supported",
+            )
     return parser
 
 
@@ -201,7 +243,7 @@ def _path_issue_message(materialized_runs: Sequence[MaterializedRun]) -> str | N
     )
     remainder = len(unique) - len(examples)
     suffix = f"; and {remainder} more" if remainder else ""
-    return f"{len(unique)} required dataset paths are missing: {details}{suffix}"
+    return f"{len(unique)} required runtime paths are missing: {details}{suffix}"
 
 
 def _validate_command(args: argparse.Namespace) -> int:
@@ -271,6 +313,59 @@ def _plan_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def _build_selected_runtime(args: argparse.Namespace):
+    if args.num_workers is not None and args.num_workers < 0:
+        raise ConfigError("--num-workers must be zero or a positive integer.")
+    config = load_experiment(args.config)
+    selected_filters = _filters(args.only)
+    environment, registry = _runtime(args.config, args.environment)
+    materialized = materialize_experiment(
+        config,
+        environment,
+        registry,
+        only=selected_filters,
+        check_paths=True,
+    )
+    if len(materialized) != 1:
+        raise ConfigError(
+            f"Runtime commands require exactly one run, selected {len(materialized)}."
+        )
+    issue_message = _path_issue_message(materialized)
+    if issue_message:
+        raise ConfigError(issue_message)
+
+    try:
+        from seismic_byol.runtime import build_runtime
+    except ImportError as exc:
+        raise ConfigError(
+            "Minerva runtime is not installed; run "
+            '`python -m pip install -e ".[runtime]"`.'
+        ) from exc
+    return build_runtime(
+        materialized[0],
+        registry,
+        accelerator=args.accelerator,
+        num_workers=args.num_workers,
+    )
+
+
+def _build_command(args: argparse.Namespace) -> int:
+    runtime = _build_selected_runtime(args)
+    summary = runtime.as_dict()
+    if args.format == "json":
+        print(json.dumps(summary, indent=2))
+    else:
+        print(yaml.safe_dump(summary, sort_keys=False))
+    return 0
+
+
+def _run_command(args: argparse.Namespace) -> int:
+    runtime = _build_selected_runtime(args)
+    print(yaml.safe_dump(runtime.as_dict(), sort_keys=False))
+    runtime.execute(debug=args.debug)
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the command-line interface."""
 
@@ -281,6 +376,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _validate_command(args)
         if args.command == "plan":
             return _plan_command(args)
+        if args.command == "build":
+            return _build_command(args)
+        if args.command == "run":
+            return _run_command(args)
         parser.error(f"unknown command: {args.command}")
     except ConfigError as exc:
         print(f"error: {exc}", file=sys.stderr)

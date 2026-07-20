@@ -228,10 +228,70 @@ referencia seus componentes:
 - `ContrastiveTransform` e demais transforms;
 - `SimpleLightningPipeline` e `Experiment`.
 
-Os manifestos já são conectados aos datasets dos três ambientes. A próxima
-etapa instanciará os objetos Minerva a partir desses manifestos. Os comandos
-`validate` e `plan` continuam sem inicializar CUDA ou importar PyTorch/Minerva,
-portanto podem ser usados em máquinas leves e em CI.
+Os manifestos são conectados aos datasets dos três ambientes e podem ser
+instanciados como objetos Minerva reais. Os comandos `validate` e `plan`
+continuam sem inicializar CUDA ou importar PyTorch/Minerva, portanto podem ser
+usados em máquinas leves e em CI.
+
+### Construir um runtime Minerva
+
+`build` exige uma única combinação e valida os paths antes de criar modelo,
+data module, Trainer e pipeline:
+
+```bash
+seismic-byol build configs/experiments/paper_main.yaml \
+  --environment container \
+  --only matrix=byol-pretrain \
+  --only pretrain=both_N \
+  --only seed=0
+```
+
+É possível inspecionar um runtime em CPU sem alterar a definição científica:
+
+```bash
+seismic-byol build configs/experiments/paper_main.yaml \
+  --environment container \
+  --only matrix=downstream \
+  --only pretrain=scratch \
+  --only finetune=f3_N \
+  --only head=linear \
+  --only backbone_mode=unfrozen \
+  --only cap=32 \
+  --only seed=0 \
+  --accelerator cpu
+```
+
+O runtime usa:
+
+- `SimpleLightningPipeline` para BYOL, com checkpoints em dez intervalos;
+- `Experiment` para fine-tuning e avaliação;
+- `ModelConfig`/`ModelInstantiator` para scratch, ImageNet, COCO e checkpoints
+  BYOL;
+- `MinervaDataModule`, `SimpleDataset`, `TiffReader`, `PNGReader` e
+  `BinaryTreeSubset`;
+- métricas Minerva/TorchMetrics para mIoU, accuracy e F1 weighted;
+- Trainer determinístico, sem `cudnn.benchmark`.
+
+O adaptador A700 mantém apenas a regra específica do projeto — leitura NPY,
+split determinístico 90/10 e Z-score por amostra — e entrega os datasets a um
+`MinervaDataModule`.
+
+### Executar uma combinação
+
+Depois de inspecionar o runtime:
+
+```bash
+seismic-byol run configs/experiments/paper_main.yaml \
+  --environment sdumont \
+  --only matrix=byol-pretrain \
+  --only pretrain=both_N \
+  --only seed=0
+```
+
+Fine-tunes que usam BYOL só podem iniciar quando o `last.ckpt` do pré-treino
+correspondente existir. A dependência é validada antes de importar os pesos.
+Para downstream, `--debug` usa a execução reduzida fornecida pelo
+`minerva.pipelines.experiment.Experiment`.
 
 ## Testes
 

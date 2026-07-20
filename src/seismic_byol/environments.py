@@ -30,6 +30,7 @@ class DatasetDefinition:
     kind: str
     roles: tuple[str, ...]
     pretrain_path: Path | None
+    padding: tuple[int, int] | None
     required: Mapping[str, tuple[Path, ...]]
 
 
@@ -157,6 +158,18 @@ def load_dataset_registry(config_root: str | Path) -> DatasetRegistry:
         pretrain_path = (
             Path(raw_pretrain_path) if raw_pretrain_path is not None else None
         )
+        raw_padding = raw_definition.get("padding")
+        padding = None
+        if raw_padding is not None:
+            if (
+                not isinstance(raw_padding, list)
+                or len(raw_padding) != 2
+                or not all(isinstance(value, int) and value > 0 for value in raw_padding)
+            ):
+                raise ConfigError(
+                    f"datasets.{name}.padding must contain two positive integers."
+                )
+            padding = (raw_padding[0], raw_padding[1])
 
         raw_required = raw_definition.get("required", {})
         if not isinstance(raw_required, Mapping):
@@ -179,6 +192,7 @@ def load_dataset_registry(config_root: str | Path) -> DatasetRegistry:
             kind=kind,
             roles=roles,
             pretrain_path=pretrain_path,
+            padding=padding,
             required=required,
         )
 

@@ -5,6 +5,7 @@ datasets:
     kind: seismic_segmentation
     roles: [pretrain, finetune]
     pretrain_path: images
+    padding: [256, 704]
     required:
       pretrain:
         - images/train
@@ -21,6 +22,7 @@ datasets:
     kind: seismic_segmentation
     roles: [pretrain, finetune]
     pretrain_path: images
+    padding: [1008, 592]
     required:
       pretrain:
         - images/train

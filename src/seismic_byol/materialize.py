@@ -73,7 +73,20 @@ def _serialize(value: Any) -> Any:
 
 
 def _outputs(run: ResolvedRun, environment: EnvironmentProfile) -> dict[str, Path]:
-    run_root = environment.output_root / run.experiment_name / run.run_id
+    if run.stage == "finetune":
+        model_name = (
+            f"deeplabv3-{run.values['head']}-"
+            f"{run.values['backbone_mode']}-{run.values['pretrain']}"
+        )
+        run_root = (
+            environment.output_root
+            / run.experiment_name
+            / str(run.values["finetune"])
+            / model_name
+            / run.run_id
+        )
+    else:
+        run_root = environment.output_root / run.experiment_name / run.run_id
     return {
         "run_root": run_root,
         "logs": run_root / "logs",
@@ -149,6 +162,15 @@ def _materialize_one(
                 "kind": "minerva_checkpoint",
                 "checkpoint": checkpoint,
             }
+            if check_paths and not checkpoint.is_file():
+                issues.append(
+                    PathIssue(
+                        dataset=source,
+                        role="checkpoint",
+                        path=checkpoint,
+                        message="required pretrain checkpoint does not exist",
+                    )
+                )
             dependencies.append(
                 {
                     "run_id": dependency.run_id,
